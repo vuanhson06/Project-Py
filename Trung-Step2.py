@@ -58,9 +58,7 @@ def keep_letters_and_spaces(s: str) -> str:
         
     Trả về:
         Chuỗi chỉ chứa a-z và space
-        
-    Ví dụ:
-        "hello123!@#world" -> "hello   world"
+  
     """
     out = []
     for ch in s:
@@ -72,27 +70,11 @@ def keep_letters_and_spaces(s: str) -> str:
 
 
 def clean_text(text: str, stopwords: set) -> str: #Làm sạch văn bản: lowercase -> loại ký tự đặc biệt -> loại stopword
-    """
-        text: văn bản cần làm sạch
-        stopwords: tập hợp các từ dừng
-        
-    Trả về:
-        Văn bản đã làm sạch
-        
-    Các bước:
-        1. Chuyển về chữ thường
-        2. Loại bỏ ký tự đặc biệt, chỉ giữ a-z và space
-        3. Loại bỏ khoảng trắng thừa
-        4. Loại bỏ stopwords
-        5. Loại bỏ từ có độ dài <= 1
-    """
+   
     text = text.lower()# Bước 1: lowercase
-    
-
     text = keep_letters_and_spaces(text)# Bước 2: chỉ giữ chữ cái và space
     
     text = ' '.join(text.split()) # Bước 3: loại khoảng trắng thừa
-    
     
     words = text.split()
     words = [w for w in words if w not in stopwords and len(w) > 1]# Bước 4 & 5: tách từ, loại stopwords và từ ngắn
@@ -100,7 +82,6 @@ def clean_text(text: str, stopwords: set) -> str: #Làm sạch văn bản: lower
     return ' '.join(words)
 
 
-# -----------------------------
 # *) ĐỌC VÀ LÀM SẠCH DỮ LIỆU
 # -----------------------------
 def load_and_clean_data(csv_path: str, stopwords: set) -> Tuple[List[str], List[int]]:
@@ -114,7 +95,7 @@ def load_and_clean_data(csv_path: str, stopwords: set) -> Tuple[List[str], List[
     Trả về:
         (texts, labels) - danh sách văn bản đã làm sạch và nhãn (0=ham, 1=spam)
     """
-    print(f"\n📖 Đọc dữ liệu từ: {csv_path}")
+    print(f"\n Đọc dữ liệu từ: {csv_path}")
     
     texts = []
     labels = []
@@ -142,12 +123,11 @@ def load_and_clean_data(csv_path: str, stopwords: set) -> Tuple[List[str], List[
                 texts.append(cleaned)
                 labels.append(label_int)
     
-    print(f"✅ Đọc thành công {len(texts)} tin nhắn")
+    print(f" Đọc thành công {len(texts)} tin nhắn")
     print(f"   - HAM (0): {labels.count(0)} tin")
     print(f"   - SPAM (1): {labels.count(1)} tin")
     
     return texts, labels
-
 
 # -----------------------------
 # 3) CHIA TRAIN/TEST
@@ -180,8 +160,6 @@ def split_train_test(texts: List[str], labels: List[int],
     print(f" Test:  {len(X_test)} mẫu")
     
     return X_train, X_test, y_train, y_test
-
-
 # -----------------------------
 # 4) VECTOR HÓA VĂN BẢN
 # -----------------------------
@@ -221,8 +199,3 @@ def create_vectorizer(vocab_size: int = 3000, method: str = 'tfidf'):
         )
     
     return vectorizer
-
-
-
-
-
