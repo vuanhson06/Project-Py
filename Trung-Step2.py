@@ -10,8 +10,8 @@ from typing import List, Tuple, Dict
 # -----------------------------
 # 0) Cấu hình dự án
 # -----------------------------
-RANDOM_STATE = 42 # seed ngẫu nhiên để tái lập kết quả
-VOCAB_SIZE = 3000 # số lượng từ trong vocab
+RANDOM_STATE = 42 # Giá trị ngẫu nhiên để tái lập kết quả
+VOCAB_SIZE = 3000 # Số lượng từ trong vocab
 
 RAW_CSV = "data/raw/sms.csv"              # file gốc: 2 cột "label","text" (Đây là đường dẫn đến file dữ liệu gốc)
 TRAIN_OUT = "data/processed/train.csv"    # output train (File đầu ra dữ liệu huấn luyện)
@@ -42,4 +42,5 @@ def keep_letters_and_spaces(s: str) -> str:
             out.append(ch)
         else:
             out.append(' ') # Thay kí tự khác/không hợp lệ bằng khoảng trắng
+
     return ''.join(out) # Ghép các kí tự lại thành chuỗi hoàn chỉnh 
