@@ -13,7 +13,6 @@ def tokenize(text: str) -> List[str]:
     text = text.lower()
 
     # 2. Giữ lại các ký tự chữ và khoảng trắng (loại bỏ số, ký tự đặc biệt, emoji...)
-    #    -> hàm keep_letters_and_spaces() phải được định nghĩa ở phần trước.
     #    -> ví dụ: "Hello!!!" -> "Hello"
     text = keep_letters_and_spaces(text)
 
@@ -21,46 +20,41 @@ def tokenize(text: str) -> List[str]:
     #    -> "free offer now" -> ["free", "offer", "now"]
     words = text.split()
 
-    # 4. Loại bỏ các token rỗng và các từ vô nghĩa (stopwords) như "the", "is", "and"...
+    # 4. Loại bỏ các token rỗng và các từ vô nghĩa (stopwords) và trả về danh sách từ đã được tách và lọc sạch.
     #    -> STOPWORDS là một tập hợp các từ cần bỏ, được định nghĩa sẵn.
-    tokens = [w for w in words if w and (w not in STOPWORDS)]
-
-    # 5. Trả về danh sách từ đã được tách và lọc sạch.
-    return tokens
-
+    return [w for w in words if w and (w not in STOPWORDS)]
 
 # -----------------------------
 # 2) Đọc dữ liệu thô từ file CSV
 # -----------------------------
 def read_raw_csv(path: str) -> Tuple[List[str], List[str]]:
-    """
-    Đọc file CSV có 2 cột: 'label' (spam/ham) và 'text' (nội dung tin nhắn).
-    Trả về hai danh sách song song:
-        - labels: chứa nhãn ('spam' hoặc 'ham')
-        - texts: chứa nội dung tin nhắn
+     """
+    Đọc file spam.csv từ Kaggle (v1,v2,...)
+    Trả về: labels, texts
     """
 
-    labels, texts = [], []
+      import pandas as pd  # Dùng pandas để đọc và xử lý dữ liệu dạng bảng (CSV, Excel, ...)
+    
+    # Đọc file CSV từ đường dẫn truyền vào.
+    # Dùng encoding='latin-1' để tránh lỗi ký tự (file spam.csv thường không đọc được bằng utf-8)
+    df = pd.read_csv(path, encoding='latin-1')
 
-    # Mở file CSV theo encoding UTF-8 để đọc được tiếng Việt.
-    # newline='' để tránh lỗi xuống dòng sai định dạng.
-    with open(path, 'r', encoding='utf-8', newline='') as f:
-        reader = csv.DictReader(f)
+    # Đổi tên các cột gốc (v1, v2) thành tên dễ hiểu hơn:
+    # v1 → label (nhãn: spam/ham), v2 → text (nội dung tin nhắn)
+    df = df.rename(columns={'v1': 'label', 'v2': 'text'})
 
-        # Kiểm tra xem file có đủ cột 'label' và 'text' không.
-        # Nếu thiếu, chương trình sẽ dừng lại và báo lỗi.
-        assert "label" in reader.fieldnames and "text" in reader.fieldnames, \
-            "File CSV phải có 2 cột: 'label' và 'text'."
+    # Giữ lại đúng 2 cột cần thiết, bỏ các cột trống hoặc dư thừa 
+    df = df[['label', 'text']]
 
-        # Duyệt từng dòng trong file CSV:
-        # Mỗi dòng là một dict, ví dụ: {"label": "spam", "text": "Free entry..."}
-        for row in reader:
-            # Lấy nội dung của từng cột, đồng thời loại khoảng trắng dư thừa 2 bên.
-            labels.append(row["label"].strip())  # ví dụ: "spam"
-            texts.append(row["text"].strip())    # ví dụ: "Win a free prize now!"
+    # Chuyển cột 'label' thành list Python (chuỗi) để dễ xử lý sau này
+    # Ví dụ: ['ham', 'spam', 'ham', ...]
+    labels = df['label'].astype(str).tolist()
 
-    # Trả về 2 danh sách có cùng số lượng phần tử:
-    # labels[i] tương ứng với texts[i]
+    # Chuyển cột 'text' thành list Python (chuỗi)
+    # Ví dụ: ['Ok lar...', 'Free entry...', 'Go until jurong...', ...]
+    texts = df['text'].astype(str).tolist()
+
+    # Trả về hai danh sách song song: labels[i] tương ứng với texts[i]
     return labels, texts
 
 
