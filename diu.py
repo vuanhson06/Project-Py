@@ -15,7 +15,7 @@ def stratified_split(labels: List[str], test_size: float, random_state: int = 42
         random.shuffle(idx) # xáo trộn idx để mỗi lần test là 1 idx khác nhau k bị lệ thuộc vào idx đầu, sau cùng chạy sẽ ra 1 kết quả
         k = max(1, int(len(idx)*test_size)) # mỗi lớp có ít nhất 1 mẫu test
         test_idx.extend(idx[:k]) # chuyển vào tập test
-        train_idx.extend(idx[:k]) 
+        train_idx.extend(idx[k:]) 
     train_idx.sort()
     test_idx.sort()
     return train_idx, test_idx
@@ -25,11 +25,12 @@ def build_vocab_from_train(train_texts, k = 3000): #build = 3000 từ train
     for t in train_texts: #duyệt từng câu
         words = tokenize(t) #không cần thiết lắm nhưng t muốn để vậy dễ hiểu hơn, để hiểu là tách thành các từ xong duyệt
         for w in words:
-            fred[w] = freq.get(w,0) +1 # số lần xuất hiện từ +1, chưa xuất hiện là 0+1
+            freq[w] = freq.get(w,0) +1 # số lần xuất hiện từ +1, chưa xuất hiện là 0+1
     items = sorted(freq.items(), key = lambda x: (-x[1], x[0])) #số lần lặp từ giảm dần, các từ hay gặp sẽ lên đầu danh sách
     k = min(k, len(items))
     vocab = [w for w, _ in items[:k]] # lấy nội dung, đánh dấu số lần xuất hiện
     return vocab
+
 
 
 
