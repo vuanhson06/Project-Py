@@ -13,7 +13,7 @@ from typing import List, Tuple, Dict
 RANDOM_STATE = 42 # Giá trị ngẫu nhiên để tái lập kết quả
 VOCAB_SIZE = 3000 # Số lượng từ trong vocab
 
-RAW_CSV = "data/raw/sms.csv"              # file gốc: 2 cột "label","text" (Đây là đường dẫn đến file dữ liệu gốc)
+RAW_CSV = "spam.csv"              # file gốc: 2 cột "label","text" (Đây là đường dẫn đến file dữ liệu gốc)
 TRAIN_OUT = "data/processed/train.csv"    # output train (File đầu ra dữ liệu huấn luyện)
 TEST_OUT  = "data/processed/test.csv"     # output test (File đầu ra dữ liệu kiểm tra)
 VEC_PKL   = "artifacts/vectorizer.pkl"    # pickle vectorizer cho Bước 3/4 (File lưu bộ vectorizer)
@@ -44,3 +44,4 @@ def keep_letters_and_spaces(s: str) -> str:
             out.append(' ') # Thay kí tự khác/không hợp lệ bằng khoảng trắng
 
     return ''.join(out) # Ghép các kí tự lại thành chuỗi hoàn chỉnh 
+
