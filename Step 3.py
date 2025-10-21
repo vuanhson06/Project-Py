@@ -96,7 +96,7 @@ def main(args):
 
     # 3) GridSearchCV
     gs = grid_and_cv(args.model)
-    gs.fit(X_train, X_train)
+    gs.fit(X_train, y_train)
 
     # 4) Đánh giá trên test
     y_pred = gs.best_estimator_.predict(X_test) # y_pred là mảng dự đoán nhãn (0 hoặc 1, tương ứng với ham/spam).
@@ -113,20 +113,60 @@ def main(args):
 
     os.makedirs(os.path.dirname(args.metrics_csv), exist_ok=True) # Đảm bảo thư mục reports/ tồn tại
     row = pd.DataFrame([metrics]) # Biến metrics (dict) được chuyển thành 1 dòng DataFrame
-    if os.path.exists(args.metrics_csv):
-        row.to_csv(args.metrics_csv, mode='a', index=False, header=False)
+    if os.path.exists(args.metrics_csv): # Nếu file kết quả tồn tại
+        row.to_csv(args.metrics_csv, mode='a', index=False, header=False) # Ghi thêm dòng mới
     else:
-        row.to_csv(args.metrics_csv, index=False)
+        row.to_csv(args.metrics_csv, index=False) # Nếu chưa có thì tạo file mới với dòng tiêu đề
 
     print(json.dumps(metrics, indent=2))
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model", choices=["nb","lr","svm"], required=True)
-    parser.add_argument("--train", default="data/processed/train.csv")
-    parser.add_argument("--test",  default="data/processed/test.csv")
-    parser.add_argument("--vectorizer", default="artifacts/vectorizer.pkl")
-    parser.add_argument("--out_model", default="artifacts/spam_model.pkl")
-    parser.add_argument("--metrics_csv", default="reports/metrics.csv")
-    args = parser.parse_args()
-    main(args) # RUN
+if __name__ == "__main__": # Điểm bắt đầu chương trình khi file này được chạy trực tiếp
+    parser = argparse.ArgumentParser() # Tạo một đối tượng parser để đọc command line arguments
+    parser.add_argument("--model", choices=["nb","lr","svm"], required=False, help="Điền tên model hoặc để trống để test tất cả")
+    # Định nghĩa 1 tham số có dòng lệnh tùy chọn:
+        # choices=["nb","lr","svm"]: chỉ chấp nhận 3 giá trị "nb", "lr", hoặc "svm".
+        # required=False: không bắt buộc phải nhập (có thể bỏ trống).
+        # help="...": mô tả sẽ hiện ra khi chạy python Step3.py -h.
+    parser.add_argument("--train", default="data/processed/train.csv") # Tham số --train dùng để chỉ định file dữ liệu train.
+    parser.add_argument("--test",  default="data/processed/test.csv") # Tham số --test dùng để chỉ định file dữ liệu test.
+    parser.add_argument("--vectorizer", default="artifacts/vectorizer.pkl") # File chứa vectorizer đã được lưu từ bước trước
+    parser.add_argument("--out_model", default="artifacts/spam_model.pkl") # Đường dẫn nơi sẽ lưu mô hình tốt nhất sau khi train.
+    parser.add_argument("--metrics_csv", default="reports/metrics.csv") # File CSV nơi ghi lại các chỉ số đánh giá mô hình (accuracy,   f1_weighted, precision, …).
+    args = parser.parse_args() #Đọc toàn bộ tham số dòng lệnh người dùng nhập khi chạy chương trình,và gói lại trong biến args
+
+    if args.model: # Nếu đã chỉ định model từ dòng lệnh, thì chỉ chạy model đó
+        main(args) # VD chạy "python Step3.py --model nb" thì chỉ chạy NB
+
+    else: # Nếu không chỉ định model, thì thử tất cả nb, lr, svm rồi chọn mô hình tốt nhất
+        print("No model specified, running nb / lr / svm sequentially...") 
+
+        results = {}  # Tạo một dictionary để lưu điểm của từng model
+        models = ["nb", "lr", "svm"]
+        for m in models:
+            print(f"Model: {m}")
+            args.model = m
+            main(args)  # gọi lại hàm main() để train model này
+
+            # Đọc file metrics CSV để lấy điểm f1_weighted mới nhất
+            df = pd.read_csv(args.metrics_csv)
+            last_row = df.iloc[-1]  # lấy dòng cuối cùng (mới nhất)
+            results[m] = last_row["f1_weighted"]  # lưu điểm f1_weighted vào dict
+
+        best_model_name = max(results, key=results.get) # Tên model có điểm f1_weighted cao nhất
+        best_score = results[best_model_name] # Điểm f1_weighted cao nhất
+
+        print("\nFinal Result:")
+        for m, s in results.items():
+            print(f"  - {m}: {s:.4f}")
+        print(f"Best Model: {best_model_name.upper()} (f1_weighted = {best_score:.4f})")
+
+        # Lưu tóm tắt kết quả vào file JSON
+        summary = {
+            "best_model": best_model_name,
+            "best_score": best_score,
+            "all_results": results
+        }
+        os.makedirs("reports", exist_ok=True)
+        with open("reports/best_model_summary.json", "w", encoding="utf-8") as f:
+            json.dump(summary, f, indent=2, ensure_ascii=False)
+        print("The result is saved in reports/best_model_summary.json")
