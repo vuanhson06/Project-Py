@@ -96,7 +96,7 @@ def main(args):
 
     # 3) GridSearchCV
     gs = grid_and_cv(args.model)
-    gs.fit(X_train, y_train)
+    gs.fit(X_train, y_train) # type: ignore
 
     # 4) Đánh giá trên test
     y_pred = gs.best_estimator_.predict(X_test) # y_pred là mảng dự đoán nhãn (0 hoặc 1, tương ứng với ham/spam).
@@ -152,7 +152,7 @@ if __name__ == "__main__": # Điểm bắt đầu chương trình khi file này 
             last_row = df.iloc[-1]  # lấy dòng cuối cùng (mới nhất)
             results[m] = last_row["f1_weighted"]  # lưu điểm f1_weighted vào dict
 
-        best_model_name = max(results, key=results.get) # Tên model có điểm f1_weighted cao nhất
+        best_model_name = max(results, key=results.get)# type: ignore # Tên model có điểm f1_weighted cao nhất
         best_score = results[best_model_name] # Điểm f1_weighted cao nhất
 
         print("\nFinal Result:")
