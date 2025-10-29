@@ -1,6 +1,19 @@
 # -----------------------------
 # 1) Tách từ (Tokenize)
 # -----------------------------
+from typing import List, Tuple
+import re
+import pandas as pd  # Dùng pandas để đọc và xử lý dữ liệu dạng bảng (CSV, Excel, ...)
+
+# Nếu muốn loại bỏ stopwords, có thể load hoặc định nghĩa sẵn
+STOPWORDS = set()  
+
+def keep_letters_and_spaces(text: str) -> str:
+    """
+    Giữ lại chữ cái và khoảng trắng, xóa số, ký tự đặc biệt.
+    """
+    return re.sub(r'[^a-zA-Z\s]', '', text)
+
 def tokenize(text: str) -> List[str]:
     """
     Hàm tách từ cơ bản cho tin nhắn (đã được làm sạch trước đó).
@@ -28,13 +41,10 @@ def tokenize(text: str) -> List[str]:
 # 2) Đọc dữ liệu thô từ file CSV
 # -----------------------------
 def read_raw_csv(path: str) -> Tuple[List[str], List[str]]:
-     """
+    """
     Đọc file spam.csv từ Kaggle (v1,v2,...)
     Trả về: labels, texts
     """
-
-      import pandas as pd  # Dùng pandas để đọc và xử lý dữ liệu dạng bảng (CSV, Excel, ...)
-    
     # Đọc file CSV từ đường dẫn truyền vào.
     # Dùng encoding='latin-1' để tránh lỗi ký tự (file spam.csv thường không đọc được bằng utf-8)
     df = pd.read_csv(path, encoding='latin-1')
@@ -56,5 +66,3 @@ def read_raw_csv(path: str) -> Tuple[List[str], List[str]]:
 
     # Trả về hai danh sách song song: labels[i] tương ứng với texts[i]
     return labels, texts
-
-

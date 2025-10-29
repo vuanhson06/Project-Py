@@ -2,6 +2,8 @@
 import random
 import numpy as np
 from typing import List, Tuple, Dict
+from Tokenize import tokenize
+
 def stratified_split(labels: List[str], test_size: float, random_state: int = 42): #chia dữ liệu thành train và test
     random.seed(random_state) #dữ liệu sẽ giống nhau sau mỗi lần run
     by_cls: Dict[str, List[int]] = {} # index được gom vào 2 lớp

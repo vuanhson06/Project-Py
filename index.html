@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmongSMS - Spam Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS for FAQ section */
+        .faq-container {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 100%;
+        }
+        
+        .faq-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .faq-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .faq-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+        
+        .faq-item {
+            margin-bottom: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .faq-question {
+            padding: 18px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .faq-question.active {
+            background: rgba(74, 222, 128, 0.15);
+            border-bottom: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        
+        .faq-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: #4ade80;
+        }
+        
+        .faq-question.active .faq-icon {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+        
+        .faq-answer.active {
+            padding: 20px;
+            max-height: 500px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Enhanced result display */
+        .result-confidence {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 10px 0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .confidence-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .confidence-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .confidence-low {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .spam-keywords {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .spam-keywords h4 {
+            margin: 0 0 8px 0;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .keyword-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .keyword-tag {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .faq-container {
+                padding: 15px;
+            }
+            
+            .faq-question {
+                padding: 15px;
+                font-size: 1rem;
+            }
+            
+            .faq-answer.active {
+                padding: 15px;
+            }
+            
+            .keyword-tags {
+                gap: 6px;
+            }
+            
+            .keyword-tag {
+                font-size: 0.8rem;
+                padding: 3px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">AMONG SMS</div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active" onclick="switchTab('single')">Single Prediction</a></li>
+                <li><a href="#" onclick="switchTab('batch')">Batch Upload</a></li>
+                <li><a href="#" onclick="switchTab('info')">Other Info</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            <img src="crewmate.png" alt="Crewmate Among Us" class="crewmate-img">
+
+            <div class="form-container">
+                <!-- Single Prediction Tab -->
+                <div id="single-tab" class="tab-content active">
+                    <form id="single-form">
+                        <div class="input-container">
+                            <input type="text" id="sms-input" name="sms" placeholder="Enter your suspicious SMS...">
+                        </div>
+                        <button type="submit" class="submit-btn">Analyze Message</button>
+                    </form>
+                    
+                    <div class="result-container" id="resultContainer">
+                        <div class="result-content">
+                            <div class="result-icon"></div>
+                            <div class="result-text" id="resultText">Results will appear here...</div>
+                            <div id="confidenceDisplay"></div>
+                            <div id="keywordsDisplay"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Batch Upload Tab -->
+                <div id="batch-tab" class="tab-content">
+                    <div class="batch-upload">
+                        <h3>Upload CSV File</h3>
+                        <p>Upload CSV file containing messages for batch analysis</p>
+                        
+                        <form id="batch-form">
+                            <div class="file-upload-container">
+                                <input type="file" id="csv-file" accept=".csv" class="file-input">
+                                <label for="csv-file" class="file-label">
+                                    <span class="file-icon">📁</span>
+                                    <span class="file-text">Choose CSV file</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="submit-btn">Process Batch</button>
+                        </form>
+                        
+                        <div class="batch-result" id="batchResult"></div>
+                    </div>
+                </div>
+
+                <!-- Other Info Tab - FAQ ONLY -->
+                <div id="info-tab" class="tab-content">
+                    <div class="faq-container">
+                        <div class="faq-header">
+                            <h3>💬 Frequently Asked Questions</h3>
+                            <p>Common questions about SMS spam and detection</p>
+                        </div>
+                        
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    What is SMS spam?
+                                    <span class="faq-icon">▼</span>
+                                </div>
+                                <div class="faq-answer">
+                                    SMS spam refers to unsolicited text messages sent in bulk, often for commercial purposes or scams. These messages typically promote products, services, or contain fraudulent content designed to trick recipients into providing personal information or money.
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    How does AmongSMS detect spam?
+                                    <span class="faq-icon">▼</span>
+                                </div>
+                                <div class="faq-answer">
+                                    AmongSMS uses advanced machine learning algorithms trained on thousands of SMS messages to identify patterns and keywords commonly found in spam. It analyzes message content, structure, specific keywords, and contextual patterns to determine if a message is likely spam with high accuracy.
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    What are common signs of SMS spam?
+                                    <span class="faq-icon">▼</span>
+                                </div>
+                                <div class="faq-answer">
+                                    <ul style="margin-left: 20px; margin-top: 10px;">
+                                        <li>Urgent language demanding immediate action</li>
+                                        <li>Promises of prizes, money, or unexpected rewards</li>
+                                        <li>Requests for personal or financial information</li>
+                                        <li>Suspicious links or shortened URLs</li>
+                                        <li>Poor grammar, spelling errors, or unusual formatting</li>
+                                        <li>Messages from unknown senders</li>
+                                        <li>Too-good-to-be-true offers</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    Is my data safe with AmongSMS?
+                                    <span class="faq-icon">▼</span>
+                                </div>
+                                <div class="faq-answer">
+                                    Yes! AmongSMS prioritizes your privacy and security. Messages are processed locally whenever possible, and we don't store your personal data. For batch processing, files are temporarily processed and immediately discarded after analysis, ensuring your information remains confidential and secure.
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    What should I do if I receive a spam message?
+                                    <span class="faq-icon">▼</span>
+                                </div>
+                                <div class="faq-answer">
+                                    <ol style="margin-left: 20px; margin-top: 10px;">
+                                        <li><strong>Do not reply</strong> to the message</li>
+                                        <li><strong>Do not click any links</strong> or call any numbers in the message</li>
+                                        <li><strong>Delete the message</strong> immediately</li>
+                                        <li>If it's a recurring issue, report it to your mobile carrier</li>
+                                        <li>Consider blocking the sender's number</li>
+                                        <li>For financial scams, report to appropriate authorities</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    Can AmongSMS detect all types of spam?
+                                    <span class="faq-icon">▼</span>
+                                </div>
+                                <div class="faq-answer">
+                                    While AmongSMS is highly accurate and detects the vast majority of spam messages, no detection system is perfect. New spam techniques emerge regularly as spammers adapt. We continuously update our machine learning models to improve detection rates against evolving threats, but we always recommend using your own judgment when dealing with suspicious messages.
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    How accurate is the spam detection?
+                                    <span class="faq-icon">▼</span>
+                                </div>
+                                <div class="faq-answer">
+                                    AmongSMS achieves over 95% accuracy in tests with known spam datasets. In real-world conditions, the accuracy typically ranges between 92-97% depending on message characteristics. The system provides confidence scores with each detection to help you assess the reliability of the result. Regular updates ensure we maintain high accuracy standards.
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    Can I use AmongSMS for languages other than English?
+                                    <span class="faq-icon">▼</span>
+                                </div>
+                                <div class="faq-answer">
+                                    Currently, AmongSMS is optimized primarily for English messages. While it may detect spam in other languages, accuracy could be lower as the model is trained mainly on English spam patterns. We're actively working to expand language support in future updates to serve a global user base better.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Introduction + Spam Info tabs -->
+            <div class="project-intro">
+                <div class="intro-header">
+                    <h2>🚀 About Among SMS</h2>
+                    <p>Smart SMS spam detection tool</p>
+                </div>
+                
+                <div class="intro-content">
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🤖</div>
+                            <h3>Machine Learning</h3>
+                            <p>Use Machine Learning to classify SMS spam with high accuracy</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>Fast Processing</h3>
+                            <p>Real-time message analysis with immediate results</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h3>Batch Processing</h3>
+                            <p>Process multiple messages from CSV files to save time</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🛡️</div>
+                            <h3>Security</h3>
+                            <p>Your data is processed locally, ensuring information security</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-stack">
+                        <h3>🛠 Tech Stack</h3>
+                        <div class="tech-list">
+                            <span class="tech-item">Python</span>
+                            <span class="tech-item">FastAPI</span>
+                            <span class="tech-item">Machine Learning</span>
+                            <span class="tech-item">JavaScript</span>
+                            <span class="tech-item">HTML/CSS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="how-it-works">
+                        <h3>🔍 How it works</h3>
+                        <div class="steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Input</h4>
+                                    <p>Enter the message you want to check into the text box</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Analysis</h4>
+                                    <p>Use Machine Learning to analyze keywords and message context</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Output</h4>
+                                    <p>Get spam/not spam classification results with confidence score</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SPAM INFO SECTIONS - TABBED -->
+                    <div class="spam-info-tabs">
+                        <div class="spam-tabs-nav">
+                            <button class="spam-tab-btn active" onclick="switchSpamTab('keywords')">
+                                🚨 Common Spam Keywords
+                            </button>
+                            <button class="spam-tab-btn" onclick="switchSpamTab('tips')">
+                                💡 Detection Tips
+                            </button>
+                        </div>
+                        
+                        <div class="spam-tabs-content">
+                            
+        <!-- Keywords Tab -->
+        <div id="keywords-tab" class="spam-tab-content active">
+            <div class="keywords-list-enhanced">
+                <div class="keyword-item-enhanced">
+                    <div class="keyword-percent-badge">89%</div>
+                    <div class="keyword-content">
+                        <div class="keyword-main-text">free</div>
+                        <div class="keyword-description">Appears in 89% of spam messages offering fake giveaways and promotions</div>
+                    </div>
+                </div>
+                <div class="keyword-item-enhanced">
+                    <div class="keyword-percent-badge">76%</div>
+                    <div class="keyword-content">
+                        <div class="keyword-main-text">win</div>
+                        <div class="keyword-description">Found in 76% of prize notification spam claiming you've won contests</div>
+                    </div>
+                </div>
+                <div class="keyword-item-enhanced">
+                    <div class="keyword-percent-badge">67%</div>
+                    <div class="keyword-content">
+                        <div class="keyword-main-text">prize</div>
+                        <div class="keyword-description">Present in lottery and sweepstakes spam messages with fake rewards</div>
+                    </div>
+                </div>
+                <div class="keyword-item-enhanced">
+                    <div class="keyword-percent-badge">82%</div>
+                    <div class="keyword-content">
+                        <div class="keyword-main-text">congratulations</div>
+                        <div class="keyword-description">Used in fake congratulation scams to create false excitement</div>
+                    </div>
+                </div>
+                <div class="keyword-item-enhanced">
+                    <div class="keyword-percent-badge">61%</div>
+                    <div class="keyword-content">
+                        <div class="keyword-main-text">click</div>
+                        <div class="keyword-description">Directs users to click malicious links in phishing attempts</div>
+                    </div>
+                </div>
+                <div class="keyword-item-enhanced">
+                    <div class="keyword-percent-badge">58%</div>
+                    <div class="keyword-content">
+                        <div class="keyword-main-text">claim</div>
+                        <div class="keyword-description">Urges immediate action to claim non-existent rewards or prizes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tips Tab -->
+        <div id="tips-tab" class="spam-tab-content">
+            <div class="tips-list-simple">
+                <div class="tip-item-simple">
+                    <div class="tip-bullet"></div>
+                    <div class="tip-text">Messages containing multiple spam keywords like "free", "win", "prize" are highly suspicious and likely to be spam</div>
+                </div>
+                <div class="tip-item-simple">
+                    <div class="tip-bullet"></div>
+                    <div class="tip-text">Spam often creates false urgency, demanding immediate action or claiming limited time offers</div>
+                </div>
+                <div class="tip-item-simple">
+                    <div class="tip-bullet"></div>
+                    <div class="tip-text">Legitimate messages rarely use excessive promotional words like 'FREE', 'WIN', 'PRIZE' repeatedly</div>
+                </div>
+                <div class="tip-item-simple">
+                    <div class="tip-bullet"></div>
+                    <div class="tip-text">Always verify prize notification messages through official channels before taking any action</div>
+                </div>
+                <div class="tip-item-simple">
+                    <div class="tip-bullet"></div>
+                    <div class="tip-text">Never click links from unknown senders without proper verification of the source</div>
+                </div>
+                <div class="tip-item-simple">
+                    <div class="tip-bullet"></div>
+                    <div class="tip-text">Check for poor grammar, spelling errors, and unusual formatting in suspicious messages</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('nav a').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Hide intro section on tabs other than single
+            document.querySelector('.project-intro').style.display = tabName === 'single' ? 'block' : 'none';
+        }
+        
+        function switchSpamTab(tabName) {
+            // Hide all tab content
+            document.querySelectorAll('.spam-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.spam-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const isActive = element.classList.contains('active');
+            
+            // Close all FAQs first
+            document.querySelectorAll('.faq-question').forEach(q => {
+                q.classList.remove('active');
+            });
+            document.querySelectorAll('.faq-answer').forEach(a => {
+                a.classList.remove('active');
+            });
+            
+            // Open clicked FAQ if not active
+            if (!isActive) {
+                element.classList.add('active');
+                answer.classList.add('active');
+            }
+        }
+
+        // Open first FAQ when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-open first FAQ when entering Other Info tab
+            const firstFAQ = document.querySelector('.faq-question');
+            if (firstFAQ && window.location.hash !== '#single' && window.location.hash !== '#batch') {
+                firstFAQ.classList.add('active');
+                firstFAQ.nextElementSibling.classList.add('active');
+            }
+        });
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>

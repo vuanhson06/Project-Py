@@ -1,6 +1,7 @@
 import argparse, os, joblib, json
 import numpy as np
 import pandas as pd
+from Vectorize import ManualVectorizer  # Import class trước khi load pickle
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from sklearn.naive_bayes import MultinomialNB
@@ -27,6 +28,7 @@ def load_data(train_path, test_path): # Tải dữ liệu
 #-----------------------------------------------------------------------------------------------------------------------------------------------
 
 def load_vectorizer(vec_path): # Mở file vector đã pickle hóa và gắn và biến vec
+    vec = joblib.load(args.vectorizer)
     vec = joblib.load(vec_path)
     return vec
 

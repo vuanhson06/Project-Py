@@ -2,6 +2,27 @@
 # -----------------------------
 # 5) Vectorizer thủ công (BoW counts)
 # -----------------------------
+from Tokenize import tokenize
+import os
+import csv
+import json
+import numpy as np
+import joblib
+from typing import List, Dict
+RAW_CSV = "data/raw/sms.csv"
+from Tokenize import read_raw_csv
+
+from split_train_test import stratified_split, build_vocab_from_train
+
+RAW_CSV = "data/raw/sms.csv"
+TEST_SIZE = 0.2
+RANDOM_STATE = 42
+VOCAB_SIZE = 3000
+TRAIN_OUT = "data/processed/train.csv"
+TEST_OUT  = "data/processed/test.csv"
+VOCAB_TXT = "artifacts/vocab.txt"
+VEC_PKL   = "artifacts/vectorizer.pkl"
+
 class ManualVectorizer:
     # tạo ra công cụ chuyển message (dạng text) thành 1 vector số.
     # basically đếm xem mỗi từ trong danh sách từ vựng xuất hiện mấy lần".
