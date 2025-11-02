@@ -65,59 +65,67 @@ The project is divided into four main stages:
 *(To be updated after training and testing the model.)*
 
 ---
-
 ## 6. Project Directory Structure
 
 ```bash
 project/
 │
 ├── data/
-│   ├── raw/                # Raw dataset (spam.csv)
-│   └── processed/          # Processed train/test datasets
+│   ├── raw/                # Original dataset (spam.csv)
+│   └── processed/          # Preprocessed train/test sets
 │
 ├── artifacts/
 │   ├── vectorizer.pkl      # Saved vectorizer
-│   └── spam_model.pkl      # Trained classification model
+│   └── spam_model.pkl      # Trained ML model
 │
 ├── app.py                  # Streamlit web application
 ├── train.py                # Model training script
-├── requirements.txt        # Required Python libraries
+├── requirements.txt        # Required dependencies
 └── README.md               # Project documentation
-## 7. Cài đặt và chạy chương trình
-7.1 Yêu cầu hệ thống
+````
 
-Python 3.8 hoặc mới hơn
+## 7. Installation and Execution
 
-pip hoặc conda để cài đặt thư viện
+### 7.1 System Requirements
 
-7.2 Cài đặt thư viện
+* Python 3.8 or higher
+* pip or conda for dependency installation
 
-Chạy lệnh sau trong terminal:
+### 7.2 Install Dependencies
 
+Run the following command in your terminal:
+
+```bash
 pip install -r requirements.txt
+```
 
-7.3 Huấn luyện mô hình (tùy chọn)
+### 7.3 Train Model (Optional)
 
-Nếu cần huấn luyện lại mô hình từ dữ liệu gốc:
+If you wish to retrain the model from scratch using the raw dataset:
 
+```bash
 python train.py
+```
 
-7.4 Chạy ứng dụng web
+### 7.4 Run Web Application
+
+To launch the Streamlit web app:
+
+```bash
 streamlit run app.py
+```
+
+After executing, open your browser at the displayed address (commonly `http://localhost:8501`).
+
+---
+
+### 7.5 Libraries Used
+
+* **pandas** – Data manipulation and CSV processing
+* **numpy** – Numerical computation
+* **scikit-learn** – Machine learning algorithms and metrics
+* **joblib** – Saving and loading models/vectorizers
+* **streamlit** – Building interactive web applications
+* **wordcloud**, **matplotlib** – Keyword visualization and plots
 
 
-Sau khi chạy, mở trình duyệt tại địa chỉ hiển thị (thường là http://localhost:8501).
-
-8. Thư viện sử dụng
-
-pandas – Xử lý dữ liệu dạng bảng (CSV)
-
-numpy – Tính toán số học
-
-scikit-learn – Các mô hình học máy cơ bản
-
-joblib – Lưu và tải mô hình/vectorizer
-
-streamlit – Xây dựng ứng dụng web đơn giản
-
-wordcloud, matplotlib – Trực quan hóa từ khóa
