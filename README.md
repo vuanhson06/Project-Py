@@ -8,6 +8,7 @@ Mục tiêu là tạo ra một pipeline hoàn chỉnh từ xử lý dữ liệu 
 
 ## 2. Thành viên nhóm và phân công nhiệm vụ
 
+| Thành viên | MSSV | Nhiệm vụ chính | File phụ trách |
 |-------------|------|----------------|----------------|
 | **Dương Hữu Tuấn Anh** | 11245832 | Biên soạn báo cáo, viết file README.md, mô tả pipeline, cấu trúc project, hướng dẫn cài đặt và chạy. | README.md, report.pdf |
 | **Vũ Anh Sơn** |  | Backend – Viết ứng dụng Streamlit, load mô hình `spam_model.pkl` và `vectorizer.pkl`, xử lý logic dự đoán và kết nối với giao diện. | app.py |
