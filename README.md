@@ -83,3 +83,41 @@ project/
 ├── train.py                # Model training script
 ├── requirements.txt        # Required Python libraries
 └── README.md               # Project documentation
+## 7. Cài đặt và chạy chương trình
+7.1 Yêu cầu hệ thống
+
+Python 3.8 hoặc mới hơn
+
+pip hoặc conda để cài đặt thư viện
+
+7.2 Cài đặt thư viện
+
+Chạy lệnh sau trong terminal:
+
+pip install -r requirements.txt
+
+7.3 Huấn luyện mô hình (tùy chọn)
+
+Nếu cần huấn luyện lại mô hình từ dữ liệu gốc:
+
+python train.py
+
+7.4 Chạy ứng dụng web
+streamlit run app.py
+
+
+Sau khi chạy, mở trình duyệt tại địa chỉ hiển thị (thường là http://localhost:8501).
+
+8. Thư viện sử dụng
+
+pandas – Xử lý dữ liệu dạng bảng (CSV)
+
+numpy – Tính toán số học
+
+scikit-learn – Các mô hình học máy cơ bản
+
+joblib – Lưu và tải mô hình/vectorizer
+
+streamlit – Xây dựng ứng dụng web đơn giản
+
+wordcloud, matplotlib – Trực quan hóa từ khóa
