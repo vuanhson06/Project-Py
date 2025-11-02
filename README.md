@@ -4,21 +4,16 @@
 
 Dự án này nhằm xây dựng một hệ thống phân loại tin nhắn SMS thành hai nhóm: **Spam (tin rác)** và **Ham (tin hợp lệ)** bằng các kỹ thuật xử lý ngôn ngữ tự nhiên (NLP) và học máy (Machine Learning).  
 Mục tiêu là tạo ra một pipeline hoàn chỉnh từ xử lý dữ liệu thô đến triển khai mô hình trên ứng dụng web.
-
-Dự án được thực hiện trong khuôn khổ môn học **Machine Learning / Data Mining** tại Trường Đại học Kinh tế Quốc dân.
-
 ---
 
 ## 2. Thành viên nhóm và phân công nhiệm vụ
 
-| Họ và tên | Mã sinh viên | Nhiệm vụ chính | File / Module phụ trách |
-|------------|--------------|----------------|---------------------------|
-| **Nguyễn Tuấn Anh** | (điền MSSV) | Biên soạn báo cáo, viết file README.md, mô tả pipeline, cấu trúc project, hướng dẫn cài đặt và chạy. | README.md, report.pdf |
-| **Nguyễn Sơn** | (điền MSSV) | Backend – Viết ứng dụng Streamlit, load mô hình `spam_model.pkl` và `vectorizer.pkl`, xử lý logic dự đoán và kết nối với giao diện. | app.py |
-| **Phạm Ánh** | (điền MSSV) | Frontend – Thiết kế giao diện web Streamlit, hiển thị kết quả dự đoán trực quan, tạo WordCloud minh họa từ khóa Spam/Ham. | app.py, assets/ |
-| **Trần Dương** | (điền MSSV) | Xây dựng `ManualVectorizer` (Bag of Words), ghi file dữ liệu, điều phối pipeline bước 2. | vectorizer.py |
-| **Nguyễn Khôi** | (điền MSSV) | Viết hàm tokenize, đọc dữ liệu gốc từ file CSV, xử lý bước tiền xử lý (preprocessing). | preprocess.py |
-| **Vũ Trung** | (điền MSSV) | Thực hiện kiểm thử hệ thống, nhập dữ liệu kiểm thử, báo cáo lỗi hiển thị hoặc logic. | test_examples.txt |
+| **Dương Hữu Tuấn Anh** | MSSV: 11245832 | Biên soạn báo cáo, viết file README.md, mô tả pipeline, cấu trúc project, hướng dẫn cài đặt và chạy. | README.md, report.pdf |
+| **Vũ Anh Sơn** | MSSV: | Backend – Viết ứng dụng Streamlit, load mô hình `spam_model.pkl` và `vectorizer.pkl`, xử lý logic dự đoán và kết nối với giao diện. | app.py |
+| **Tạ Ngọc Ánh** | MSSV: | Frontend – Thiết kế giao diện web Streamlit, hiển thị kết quả dự đoán trực quan, tạo WordCloud minh họa từ khóa Spam/Ham. | app.py, assets/ |
+| **Nguyễn Thị Dương** | MSSV: | Xây dựng `ManualVectorizer` (Bag of Words), ghi file dữ liệu, điều phối pipeline bước 2. | vectorizer.py |
+| **Trần Nguyên Khôi** |  MSSV: | Viết hàm tokenize, đọc dữ liệu gốc từ file CSV, xử lý bước tiền xử lý (preprocessing). | preprocess.py |
+| **Đỗ Quốc Trung** | MSSV: | Thực hiện kiểm thử hệ thống, nhập dữ liệu kiểm thử, báo cáo lỗi hiển thị hoặc logic. | test_examples.txt |
 
 ---
 
@@ -27,8 +22,6 @@ Dự án được thực hiện trong khuôn khổ môn học **Machine Learning
 - **Input:** Chuỗi văn bản (tin nhắn SMS).  
 - **Output:** Nhãn dự đoán `Spam` hoặc `Ham`.  
 - **Mục tiêu:** Xây dựng mô hình học máy có khả năng tự động phân biệt tin nhắn rác dựa trên nội dung văn bản.
-
-Dữ liệu sử dụng là bộ **SMS Spam Collection Dataset** (nguồn: UCI Machine Learning Repository / Kaggle).
 
 ---
 
@@ -63,15 +56,6 @@ Quy trình thực hiện được chia thành 4 giai đoạn chính:
 ---
 
 ## 5. Kết quả đánh giá mô hình
-
-| Chỉ số | Giá trị |
-|--------|----------|
-| Accuracy | 0.97 |
-| Precision (Spam) | 0.96 |
-| Recall (Spam) | 0.94 |
-| F1-score | 0.95 |
-
-*(Các giá trị trên mang tính minh họa. Sinh viên cần thay bằng kết quả thực tế khi chạy mô hình.)*
 
 ---
 
