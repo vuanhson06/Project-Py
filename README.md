@@ -8,12 +8,13 @@ Mục tiêu là tạo ra một pipeline hoàn chỉnh từ xử lý dữ liệu 
 
 ## 2. Thành viên nhóm và phân công nhiệm vụ
 
-| **Dương Hữu Tuấn Anh** | MSSV: 11245832 | Biên soạn báo cáo, viết file README.md, mô tả pipeline, cấu trúc project, hướng dẫn cài đặt và chạy. | README.md, report.pdf |
-| **Vũ Anh Sơn** | MSSV: | Backend – Viết ứng dụng Streamlit, load mô hình `spam_model.pkl` và `vectorizer.pkl`, xử lý logic dự đoán và kết nối với giao diện. | app.py |
-| **Tạ Ngọc Ánh** | MSSV: | Frontend – Thiết kế giao diện web Streamlit, hiển thị kết quả dự đoán trực quan, tạo WordCloud minh họa từ khóa Spam/Ham. | app.py, assets/ |
-| **Nguyễn Thị Dương** | MSSV: | Xây dựng `ManualVectorizer` (Bag of Words), ghi file dữ liệu, điều phối pipeline bước 2. | vectorizer.py |
-| **Trần Nguyên Khôi** |  MSSV: | Viết hàm tokenize, đọc dữ liệu gốc từ file CSV, xử lý bước tiền xử lý (preprocessing). | preprocess.py |
-| **Đỗ Quốc Trung** | MSSV: | Thực hiện kiểm thử hệ thống, nhập dữ liệu kiểm thử, báo cáo lỗi hiển thị hoặc logic. | test_examples.txt |
+|-------------|------|----------------|----------------|
+| **Dương Hữu Tuấn Anh** | 11245832 | Biên soạn báo cáo, viết file README.md, mô tả pipeline, cấu trúc project, hướng dẫn cài đặt và chạy. | README.md, report.pdf |
+| **Vũ Anh Sơn** |  | Backend – Viết ứng dụng Streamlit, load mô hình `spam_model.pkl` và `vectorizer.pkl`, xử lý logic dự đoán và kết nối với giao diện. | app.py |
+| **Tạ Ngọc Ánh** |  | Frontend – Thiết kế giao diện web Streamlit, hiển thị kết quả dự đoán trực quan, tạo WordCloud minh họa từ khóa Spam/Ham. | app.py, assets/ |
+| **Nguyễn Thị Dương** |  | Xây dựng `ManualVectorizer` (Bag of Words), ghi file dữ liệu, điều phối pipeline bước 2. | vectorizer.py |
+| **Trần Nguyên Khôi** |  | Viết hàm tokenize, đọc dữ liệu gốc từ file CSV, xử lý bước tiền xử lý (preprocessing). | preprocess.py |
+| **Đỗ Quốc Trung** |  | Thực hiện kiểm thử hệ thống, nhập dữ liệu kiểm thử, báo cáo lỗi hiển thị hoặc logic. | test_examples.txt |
 
 ---
 
