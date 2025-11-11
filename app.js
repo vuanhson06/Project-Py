@@ -1,29 +1,33 @@
-// app.js - Fixed with wider borders and side-by-side layout
+// app.js - Fixed version
+const API_BASE_URL = "http://localhost:8000";
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+// ==================== TAB MANAGEMENT FUNCTIONS ====================
 
-// Tab switching function
+/**
+ * Chuyển đổi giữa các tab chính (single/batch)
+ * @param {string} tabName - Tên tab cần hiển thị ('single' hoặc 'batch')
+ */
 function switchTab(tabName) {
-    // Hide all tab content
+    // Ẩn tất cả nội dung tab
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
     
-    // Remove active class from all buttons
+    // Xóa class active từ tất cả button
     document.querySelectorAll('nav a').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // Show selected tab
+    // Hiển thị tab được chọn
     document.getElementById(`${tabName}-tab`).classList.add('active');
     
-    // Add active class to clicked button
+    // Thêm class active cho button được click
     event.target.classList.add('active');
     
-    // Hide intro section on tabs other than single
+    // Ẩn section intro trên các tab khác 'single'
     document.querySelector('.project-intro').style.display = tabName === 'single' ? 'block' : 'none';
     
-    // Clear previous results when switching tabs
+    // Xóa kết quả trước đó khi chuyển tab
     if (tabName === 'single') {
         clearSingleResults();
     } else if (tabName === 'batch') {
@@ -31,29 +35,39 @@ function switchTab(tabName) {
     }
 }
 
+/**
+ * Chuyển đổi giữa các tab spam (dành cho phần hiển thị kết quả)
+ * @param {string} tabName - Tên tab spam cần hiển thị
+ */
 function switchSpamTab(tabName) {
-    // Hide all tab content
+    // Ẩn tất cả nội dung tab spam
     document.querySelectorAll('.spam-tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
     
-    // Remove active class from all buttons
+    // Xóa class active từ tất cả button spam
     document.querySelectorAll('.spam-tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // Show selected tab
+    // Hiển thị tab spam được chọn
     document.getElementById(`${tabName}-tab`).classList.add('active');
     
-    // Add active class to clicked button
+    // Thêm class active cho button spam được click
     event.target.classList.add('active');
 }
 
+// ==================== FAQ FUNCTIONS ====================
+
+/**
+ * Mở/đóng FAQ items
+ * @param {Element} element - Phần tử FAQ question được click
+ */
 function toggleFAQ(element) {
     const answer = element.nextElementSibling;
     const isActive = element.classList.contains('active');
     
-    // Close all FAQs first
+    // Đóng tất cả FAQs trước
     document.querySelectorAll('.faq-question').forEach(q => {
         q.classList.remove('active');
     });
@@ -61,14 +75,18 @@ function toggleFAQ(element) {
         a.classList.remove('active');
     });
     
-    // Open clicked FAQ if not active
+    // Mở FAQ được click nếu chưa active
     if (!isActive) {
         element.classList.add('active');
         answer.classList.add('active');
     }
 }
 
-// Clear single prediction results
+// ==================== RESET FUNCTIONS ====================
+
+/**
+ * Xóa kết quả phân tích đơn lẻ
+ */
 function clearSingleResults() {
     document.getElementById('resultText').textContent = 'Results will appear here...';
     document.getElementById('confidenceDisplay').innerHTML = '';
@@ -77,7 +95,9 @@ function clearSingleResults() {
     document.getElementById('resultContainer').style.display = 'none';
 }
 
-// Clear batch upload results
+/**
+ * Xóa kết quả phân tích batch
+ */
 function clearBatchResults() {
     const batchResult = document.getElementById('batchResult');
     if (batchResult) {
@@ -89,7 +109,7 @@ function clearBatchResults() {
     const fileInput = document.getElementById('csv-file');
     if (fileInput) fileInput.value = '';
     
-    // Reset file label
+    // Reset file label hiển thị
     const fileLabel = document.querySelector('.file-label');
     const fileText = document.querySelector('.file-text');
     if (fileLabel && fileText) {
@@ -99,7 +119,11 @@ function clearBatchResults() {
     }
 }
 
-// Single Prediction Form Handler
+// ==================== SINGLE PREDICTION HANDLER ====================
+
+/**
+ * Xử lý form phân tích tin nhắn đơn lẻ
+ */
 document.getElementById('single-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -109,8 +133,8 @@ document.getElementById('single-form').addEventListener('submit', async function
     const confidenceDisplay = document.getElementById('confidenceDisplay');
     const keywordsDisplay = document.getElementById('keywordsDisplay');
     
+    // Validate input
     if (!smsInput) {
-        // Clear previous results when input is empty
         showResult('Please enter a message to analyze!', 'warning');
         confidenceDisplay.innerHTML = '';
         keywordsDisplay.innerHTML = '';
@@ -118,10 +142,12 @@ document.getElementById('single-form').addEventListener('submit', async function
     }
     
     try {
+        // Hiển thị trạng thái loading
         showResult('🔄 Analyzing message...', 'loading');
         confidenceDisplay.innerHTML = '';
         keywordsDisplay.innerHTML = '';
         
+        // Gọi API phân tích
         const response = await fetch(`${API_BASE_URL}/predict`, {
             method: 'POST',
             headers: {
@@ -136,38 +162,35 @@ document.getElementById('single-form').addEventListener('submit', async function
         
         const data = await response.json();
         
-        // Get confidence level from API response
+        // Lấy độ tin cậy từ response API
         const confidence = data.confidence || 0;
         
-        // Determine confidence class based on percentage AND message type
+        // Xác định class CSS cho độ tin cậy dựa trên % VÀ loại tin nhắn
         let confidenceClass = 'confidence-medium';
         if (data.label === 'spam') {
-            // For spam messages - use red/orange colors
-            if (confidence >= 80) confidenceClass = 'confidence-high-spam';
-            else if (confidence >= 60) confidenceClass = 'confidence-medium-spam';
-            else confidenceClass = 'confidence-low-spam';
+            // Tin nhắn spam - dùng màu đỏ/cam
+            if (confidence >= 80) confidenceClass = 'confidence-high';
+            else if (confidence >= 60) confidenceClass = 'confidence-medium';
+            else confidenceClass = 'confidence-low';
         } else {
-            // For ham messages - use green/blue colors
+            // Tin nhắn hợp lệ - dùng màu xanh lá
             if (confidence >= 80) confidenceClass = 'confidence-high-ham';
             else if (confidence >= 60) confidenceClass = 'confidence-medium-ham';
             else confidenceClass = 'confidence-low-ham';
         }
         
-        // Display results based on prediction
+        // Hiển thị kết quả dựa trên prediction
         if (data.label === 'spam') {
-            showResult(
-                `SPAM DETECTED!`,
-                'spam'
-            );
+            showResult('🚨 SPAM DETECTED!', 'spam');
             
-            // Display confidence with dynamic styling
+            // Hiển thị độ tin cậy với styling động
             confidenceDisplay.innerHTML = `
                 <div class="result-confidence ${confidenceClass}">
                     Confidence: ${confidence}%
                 </div>
             `;
             
-            // Display spam keywords if available
+            // LUÔN HIỂN THỊ TỪ KHÓA SPAM (nếu có)
             if (data.top_words && data.top_words.length > 0) {
                 const keywordsHTML = data.top_words.map(word => 
                     `<span class="keyword-tag">${word[0]}</span>`
@@ -181,42 +204,47 @@ document.getElementById('single-form').addEventListener('submit', async function
                         </div>
                     </div>
                 `;
+            } else {
+                keywordsDisplay.innerHTML = `
+                    <div class="spam-keywords">
+                        <h4>Spam pattern detected based on message content</h4>
+                    </div>
+                `;
             }
             
         } else {
-            showResult(
-                `SAFE MESSAGE`,
-                'ham'
-            );
+            // Tin nhắn hợp lệ
+            showResult('✅ SAFE MESSAGE', 'ham');
             
-            // Display confidence with dynamic styling (now using ham colors)
+            // Hiển thị độ tin cậy với styling động
             confidenceDisplay.innerHTML = `
                 <div class="result-confidence ${confidenceClass}">
                     Confidence: ${confidence}%
                 </div>
             `;
+            keywordsDisplay.innerHTML = ''; // Không hiển thị keywords cho ham
         }
         
     } catch (error) {
         console.error('Error:', error);
-        showResult(
-            `❌ Connection error to server!\n` +
-            `Please check if backend is running?\n` +
-            `Details: ${error.message}`,
-            'error'
-        );
+        showResult('❌ Connection error! Please check if backend is running.', 'error');
         confidenceDisplay.innerHTML = '';
         keywordsDisplay.innerHTML = '';
     }
 });
 
-// Batch Upload Form Handler - KHUNG MỜ DÀI RA VÀ BẢNG 2 BÊN
+// ==================== BATCH UPLOAD HANDLER - FIXED VERSION ====================
+
+/**
+ * Xử lý form upload và phân tích batch file CSV
+ */
 document.getElementById('batch-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const fileInput = document.getElementById('csv-file');
     const batchResult = document.getElementById('batchResult');
     
+    // Validate file input
     if (!fileInput.files[0]) {
         batchResult.innerHTML = '<div class="result-warning">Please select a CSV file!</div>';
         batchResult.style.display = 'block';
@@ -224,7 +252,7 @@ document.getElementById('batch-form').addEventListener('submit', async function(
     }
     
     try {
-        // Show loading state
+        // Cập nhật UI trạng thái processing
         const submitBtn = document.querySelector('#batch-form .submit-btn');
         submitBtn.textContent = '🔄 Processing...';
         submitBtn.disabled = true;
@@ -232,313 +260,248 @@ document.getElementById('batch-form').addEventListener('submit', async function(
         batchResult.innerHTML = '<div class="loading">🔄 Processing CSV file...</div>';
         batchResult.style.display = 'block';
         
+        // Chuẩn bị FormData để upload file
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
         
+        console.log('📤 Sending batch request to:', `${API_BASE_URL}/batch-predict-json`);
+        console.log('📁 File:', fileInput.files[0].name);
+        
+        // GỌI API THẬT cho batch processing
         const response = await fetch(`${API_BASE_URL}/batch-predict-json`, {
             method: 'POST',
             body: formData
         });
         
+        console.log('📥 Response status:', response.status);
+        
         if (!response.ok) {
             const errorText = await response.text();
+            console.error('❌ Server error:', errorText);
             throw new Error(`Server error: ${response.status} - ${errorText}`);
         }
         
         const data = await response.json();
+        console.log('✅ API Response data:', data);
         
+        // Xử lý kết quả thành công
         if (data.success) {
-            // Tạo HTML cho 2 bảng với khung mờ dài ra
-            let resultsHTML = `
-                <div class="batch-results-container active" style="
-                    background: rgba(255, 255, 255, 0.05); 
-                    border-radius: 20px; 
-                    padding: 30px; 
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    backdrop-filter: blur(10px);
-                    margin-top: 25px;
-                    width: 100%;
-                    max-width: none;
-                ">
-                    <div class="batch-results-header" style="text-align: center; margin-bottom: 30px;">
-                        <h3 class="batch-results-title" style="color: #ffd700; font-size: 1.8rem; margin-bottom: 10px;">Batch Analysis Results</h3>
-                        <p class="batch-results-subtitle" style="color: rgba(255, 255, 255, 0.7);">Messages categorized as spam and legitimate</p>
-                    </div>
-                    
-                    <div class="batch-stats" style="
-                        display: grid;
-                        grid-template-columns: repeat(3, 1fr);
-                        gap: 20px;
-                        margin-bottom: 40px;
-                    ">
-                        <div class="stat-card" style="
-                            background: rgba(255, 255, 255, 0.08);
-                            padding: 25px;
-                            border-radius: 15px;
-                            text-align: center;
-                            border: 1px solid rgba(255, 255, 255, 0.1);
-                        ">
-                            <div class="stat-value total-stat" style="color: #60a5fa; font-size: 2.5rem; font-weight: bold;">${data.total_messages}</div>
-                            <div class="stat-label" style="color: rgba(255, 255, 255, 0.8);">Total Messages</div>
-                        </div>
-                        <div class="stat-card" style="
-                            background: rgba(255, 255, 255, 0.08);
-                            padding: 25px;
-                            border-radius: 15px;
-                            text-align: center;
-                            border: 1px solid rgba(255, 255, 255, 0.1);
-                        ">
-                            <div class="stat-value spam-stat" style="color: #ff6b6b; font-size: 2.5rem; font-weight: bold;">${data.spam_count}</div>
-                            <div class="stat-label" style="color: rgba(255, 255, 255, 0.8);">Spam Detected</div>
-                        </div>
-                        <div class="stat-card" style="
-                            background: rgba(255, 255, 255, 0.08);
-                            padding: 25px;
-                            border-radius: 15px;
-                            text-align: center;
-                            border: 1px solid rgba(255, 255, 255, 0.1);
-                        ">
-                            <div class="stat-value ham-stat" style="color: #4ade80; font-size: 2.5rem; font-weight: bold;">${data.ham_count}</div>
-                            <div class="stat-label" style="color: rgba(255, 255, 255, 0.8);">Legitimate</div>
-                        </div>
-                    </div>
-                    
-                    <div class="tables-container" style="
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 30px;
-                        width: 100%;
-                    ">
-            `;
-            
-            // Separate spam and ham results
-            const spamResults = data.results.filter(item => item.is_spam);
-            const hamResults = data.results.filter(item => !item.is_spam);
-            
-            // Spam Table - KHUNG MỜ DÀI RA
-            resultsHTML += `
-                <div class="table-section spam-section" style="
-                    border: 2px solid rgba(239, 68, 68, 0.6);
-                    border-radius: 15px;
-                    padding: 25px;
-                    background: rgba(239, 68, 68, 0.08);
-                    backdrop-filter: blur(5px);
-                    width: 100%;
-                    min-height: 400px;
-                ">
-                    <div class="section-header" style="
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
-                        margin-bottom: 20px;
-                        padding-bottom: 15px;
-                        border-bottom: 1px solid rgba(239, 68, 68, 0.3);
-                    ">
-                        <span class="section-icon" style="font-size: 2rem;"></span>
-                        <h4 class="section-title" style="color: #ef4444; font-size: 1.4rem; margin: 0; flex: 1;">Spam Messages</h4>
-                        <span class="section-count" style="
-                            background: rgba(239, 68, 68, 0.2);
-                            color: #ef4444;
-                            padding: 6px 12px;
-                            border-radius: 15px;
-                            font-size: 0.9rem;
-                            font-weight: 600;
-                        ">${spamResults.length} messages</span>
-                    </div>
-                    <table class="batch-results-table" style="
-                        width: 100%;
-                        border-collapse: collapse;
-                        border: 1px solid rgba(239, 68, 68, 0.3);
-                        border-radius: 10px;
-                        overflow: hidden;
-                    ">
-                        <thead>
-                            <tr>
-                                <th style="
-                                    background: rgba(239, 68, 68, 0.15);
-                                    color: #ffd700;
-                                    padding: 16px 20px;
-                                    text-align: left;
-                                    font-weight: 600;
-                                    border-bottom: 2px solid #ef4444;
-                                    font-size: 1rem;
-                                ">Message Content</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            if (spamResults.length > 0) {
-                spamResults.forEach(item => {
-                    const displayMessage = item.text.length > 100 
-                        ? item.text.substring(0, 100) + '...' 
-                        : item.text;
-                    
-                    resultsHTML += `
-                        <tr style="border-bottom: 1px solid rgba(239, 68, 68, 0.1);">
-                            <td style="
-                                padding: 14px 20px;
-                                color: rgba(255, 255, 255, 0.9);
-                                line-height: 1.5;
-                                font-size: 0.95rem;
-                            ">${displayMessage}</td>
-                        </tr>
-                    `;
-                });
-            } else {
-                resultsHTML += `
-                    <tr>
-                        <td colspan="1" style="
-                            text-align: center; 
-                            padding: 40px; 
-                            color: rgba(255, 255, 255, 0.6); 
-                            font-style: italic;
-                            font-size: 1rem;
-                        ">No spam messages detected</td>
-                    </tr>
-                `;
-            }
-            
-            resultsHTML += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            
-            // Ham Table - KHUNG MỜ DÀI RA
-            resultsHTML += `
-                <div class="table-section ham-section" style="
-                    border: 2px solid rgba(74, 222, 128, 0.6);
-                    border-radius: 15px;
-                    padding: 25px;
-                    background: rgba(74, 222, 128, 0.08);
-                    backdrop-filter: blur(5px);
-                    width: 100%;
-                    min-height: 400px;
-                ">
-                    <div class="section-header" style="
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
-                        margin-bottom: 20px;
-                        padding-bottom: 15px;
-                        border-bottom: 1px solid rgba(74, 222, 128, 0.3);
-                    ">
-                        <span class="section-icon" style="font-size: 2rem;"></span>
-                        <h4 class="section-title" style="color: #4ade80; font-size: 1.4rem; margin: 0; flex: 1;">Legitimate Messages</h4>
-                        <span class="section-count" style="
-                            background: rgba(74, 222, 128, 0.2);
-                            color: #4ade80;
-                            padding: 6px 12px;
-                            border-radius: 15px;
-                            font-size: 0.9rem;
-                            font-weight: 600;
-                        ">${hamResults.length} messages</span>
-                    </div>
-                    <table class="batch-results-table" style="
-                        width: 100%;
-                        border-collapse: collapse;
-                        border: 1px solid rgba(74, 222, 128, 0.3);
-                        border-radius: 10px;
-                        overflow: hidden;
-                    ">
-                        <thead>
-                            <tr>
-                                <th style="
-                                    background: rgba(74, 222, 128, 0.15);
-                                    color: #ffd700;
-                                    padding: 16px 20px;
-                                    text-align: left;
-                                    font-weight: 600;
-                                    border-bottom: 2px solid #4ade80;
-                                    font-size: 1rem;
-                                ">Message Content</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            if (hamResults.length > 0) {
-                hamResults.forEach(item => {
-                    const displayMessage = item.text.length > 100 
-                        ? item.text.substring(0, 100) + '...' 
-                        : item.text;
-                    
-                    resultsHTML += `
-                        <tr style="border-bottom: 1px solid rgba(74, 222, 128, 0.1);">
-                            <td style="
-                                padding: 14px 20px;
-                                color: rgba(255, 255, 255, 0.9);
-                                line-height: 1.5;
-                                font-size: 0.95rem;
-                            ">${displayMessage}</td>
-                        </tr>
-                    `;
-                });
-            } else {
-                resultsHTML += `
-                    <tr>
-                        <td colspan="1" style="
-                            text-align: center; 
-                            padding: 40px; 
-                            color: rgba(255, 255, 255, 0.6); 
-                            font-style: italic;
-                            font-size: 1rem;
-                        ">No legitimate messages found</td>
-                    </tr>
-                `;
-            }
-            
-            resultsHTML += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            
-            // Close containers
-            resultsHTML += `
-                    </div>
-                </div>
-            `;
-            
-            batchResult.innerHTML = resultsHTML;
-            
+            displayBatchResults(data);
         } else {
             throw new Error(data.error || 'Processing failed');
         }
         
     } catch (error) {
-        console.error('Batch upload error:', error);
+        console.error('❌ Batch upload error:', error);
         batchResult.innerHTML = `
             <div class="result-error">
-                ❌ Batch processing error!\n${error.message}
+                ❌ Batch processing error! ${error.message}
+                <br><small>Check console for details</small>
             </div>
         `;
     } finally {
-        // Reset button state
+        // Khôi phục UI về trạng thái ban đầu
         const submitBtn = document.querySelector('#batch-form .submit-btn');
         submitBtn.textContent = 'Process Batch';
         submitBtn.disabled = false;
     }
 });
 
-// File input change handler
+// ==================== BATCH RESULTS DISPLAY - REAL VERSION ====================
+
+/**
+ * Hiển thị kết quả phân tích batch từ API thực tế
+ * @param {Object} data - Dữ liệu kết quả từ API batch
+ */
+function displayBatchResults(data) {
+    const batchResult = document.getElementById('batchResult');
+    
+    console.log("Displaying REAL batch results:", data);
+    
+    // Xây dựng HTML structure cho kết quả
+    let resultsHTML = `
+        <div class="batch-results-container">
+            <div class="batch-results-header">
+                <h3 class="batch-results-title">Batch Analysis Results</h3>
+                <p class="batch-results-subtitle">Processing file: ${data.filename}</p>
+            </div>
+            
+            <div class="batch-stats">
+                <div class="stat-card">
+                    <div class="stat-value total-stat">${data.total_messages}</div>
+                    <div class="stat-label">Total Messages</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value spam-stat">${data.spam_count}</div>
+                    <div class="stat-label">Spam Detected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value ham-stat">${data.ham_count}</div>
+                    <div class="stat-label">Legitimate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: #ffd700;">${data.spam_rate || 0}%</div>
+                    <div class="stat-label">Spam Rate</div>
+                </div>
+            </div>
+            
+            <div class="tables-container">
+    `;
+    
+    // Phân loại kết quả thành spam và ham
+    const spamResults = data.results.filter(item => item.is_spam);
+    const hamResults = data.results.filter(item => !item.is_spam);
+    
+    // ==================== SPAM TABLE ====================
+    resultsHTML += `
+        <div class="table-section spam-section">
+            <div class="section-header">
+                <h4 class="section-title">Spam Messages</h4>
+                <span class="section-count">${spamResults.length} messages</span>
+            </div>
+    `;
+    
+    if (spamResults.length > 0) {
+        resultsHTML += `
+            <table class="batch-results-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Message Content</th>
+                        <th>Spam Keywords</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        // Duyệt qua từng kết quả spam
+        spamResults.forEach(item => {
+            const displayMessage = item.text.length > 60 
+                ? item.text.substring(0, 60) + '...' 
+                : item.text;
+            
+            // Hiển thị từ spam nếu có
+            let keywordsHTML = 'None detected';
+            if (item.top_spam_words && item.top_spam_words.length > 0) {
+                keywordsHTML = item.top_spam_words.map(word => 
+                    `<span class="keyword-tag-small">${word[0]}</span>`
+                ).join(' ');
+            }
+            
+            resultsHTML += `
+                <tr>
+                    <td class="id-cell">${item.id || 'N/A'}</td>
+                    <td>${displayMessage}</td>
+                    <td class="keywords-cell">${keywordsHTML}</td>
+                    <td class="confidence-cell">${item.confidence || 'N/A'}%</td>
+                </tr>
+            `;
+        });
+        
+        resultsHTML += `
+                </tbody>
+            </table>
+        `;
+    } else {
+        resultsHTML += `
+            <div style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6); font-style: italic;">
+                No spam messages detected in this file
+            </div>
+        `;
+    }
+    
+    resultsHTML += `</div>`; // Đóng spam-section
+    
+    // ==================== HAM TABLE ====================
+    resultsHTML += `
+        <div class="table-section ham-section">
+            <div class="section-header">
+                <h4 class="section-title">Legitimate Messages</h4>
+                <span class="section-count">${hamResults.length} messages</span>
+            </div>
+    `;
+    
+    if (hamResults.length > 0) {
+        resultsHTML += `
+            <table class="batch-results-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Message Content</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        // Duyệt qua từng kết quả ham
+        hamResults.forEach(item => {
+            const displayMessage = item.text.length > 60 
+                ? item.text.substring(0, 60) + '...' 
+                : item.text;
+            
+            resultsHTML += `
+                <tr>
+                    <td class="id-cell">${item.id || 'N/A'}</td>
+                    <td>${displayMessage}</td>
+                    <td class="confidence-cell">${item.confidence || 'N/A'}%</td>
+                </tr>
+            `;
+        });
+        
+        resultsHTML += `
+                </tbody>
+            </table>
+        `;
+    } else {
+        resultsHTML += `
+            <div style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6); font-style: italic;">
+                No legitimate messages found in this file
+            </div>
+        `;
+    }
+    
+    resultsHTML += `</div>`; // Đóng ham-section
+    
+    // Đóng containers
+    resultsHTML += `
+            </div>
+        </div>
+    `;
+    
+    batchResult.innerHTML = resultsHTML;
+}
+
+// ==================== FILE INPUT HANDLER ====================
+
+/**
+ * Xử lý sự kiện thay đổi file input để cập nhật UI
+ */
 document.getElementById('csv-file').addEventListener('change', function(e) {
     const fileLabel = document.querySelector('.file-label');
     const fileText = document.querySelector('.file-text');
     
     if (this.files[0]) {
+        // Cập nhật UI khi có file được chọn
         fileText.textContent = this.files[0].name;
         fileLabel.style.borderColor = '#4ade80';
         fileLabel.style.background = 'rgba(74, 222, 128, 0.1)';
     } else {
+        // Reset UI khi không có file
         fileText.textContent = 'Choose CSV file';
         fileLabel.style.borderColor = 'rgba(255, 255, 255, 0.3)';
         fileLabel.style.background = 'rgba(255, 255, 255, 0.1)';
     }
 });
 
-// Show result function
+// ==================== RESULT DISPLAY FUNCTION ====================
+
+/**
+ * Hiển thị kết quả với styling phù hợp
+ * @param {string} message - Thông báo cần hiển thị
+ * @param {string} type - Loại kết quả ('spam', 'ham', 'error', 'warning', 'loading')
+ */
 function showResult(message, type) {
     const resultContainer = document.getElementById('resultContainer');
     const resultText = document.getElementById('resultText');
@@ -547,7 +510,7 @@ function showResult(message, type) {
     resultContainer.className = 'result-container';
     resultText.className = '';
     
-    // Apply type-specific styling
+    // Áp dụng styling theo loại kết quả
     switch (type) {
         case 'spam':
             resultContainer.classList.add('result-spam');
@@ -575,22 +538,72 @@ function showResult(message, type) {
     resultContainer.style.display = 'block';
 }
 
-// Initialize the application
+// ==================== APPLICATION INITIALIZATION ====================
+
+/**
+ * Khởi tạo ứng dụng khi DOM đã load xong
+ */
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 AmongSMS Frontend Initialized');
-    
-    // Test backend connection on load
     testBackendConnection();
     
-    // Auto-open first FAQ when entering Other Info tab
-    const firstFAQ = document.querySelector('.faq-question');
-    if (firstFAQ && window.location.hash !== '#single' && window.location.hash !== '#batch') {
-        firstFAQ.classList.add('active');
-        firstFAQ.nextElementSibling.classList.add('active');
-    }
+    // Thêm CSS bổ sung cho batch results
+    const additionalCSS = `
+        .keyword-tag-small {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            margin: 1px;
+            display: inline-block;
+        }
+        .keywords-cell {
+            max-width: 150px;
+            min-width: 120px;
+        }
+        .confidence-cell {
+            font-weight: bold;
+            color: #ffd700;
+            text-align: center;
+            width: 80px;
+        }
+        .id-cell {
+            font-weight: bold;
+            color: #ffd700;
+            text-align: center;
+            width: 60px;
+        }
+        /* CSS classes cho độ tin cậy của tin nhắn hợp lệ (màu xanh) */
+        .confidence-high-ham {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .confidence-medium-ham {
+            background: rgba(34, 197, 94, 0.15);
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        .confidence-low-ham {
+            background: rgba(34, 197, 94, 0.1);
+            color: #15803d;
+            border: 1px solid rgba(34, 197, 94, 0.15);
+        }
+    `;
+    
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = additionalCSS;
+    document.head.appendChild(styleSheet);
 });
 
-// Test backend connection
+// ==================== BACKEND CONNECTION TEST ====================
+
+/**
+ * Kiểm tra kết nối đến backend server
+ */
 async function testBackendConnection() {
     try {
         const response = await fetch(`${API_BASE_URL}/health`);

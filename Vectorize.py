@@ -14,6 +14,7 @@ from Tokenize import read_raw_csv
 
 from split_train_test import stratified_split, build_vocab_from_train
 
+
 RAW_CSV = "data/raw/sms.csv"
 TEST_SIZE = 0.2
 RANDOM_STATE = 42

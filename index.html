@@ -156,6 +156,191 @@
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
         
+        /* Batch Analysis Results Styles */
+        .batch-results-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            margin-top: 25px;
+            width: 100%;
+            max-width: none;
+        }
+        
+        .batch-results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .batch-results-title {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .batch-results-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .batch-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .total-stat {
+            color: #60a5fa;
+        }
+        
+        .spam-stat {
+            color: #ff6b6b;
+        }
+        
+        .ham-stat {
+            color: #4ade80;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .tables-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .table-section {
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(5px);
+            width: 100%;
+            min-height: 400px;
+        }
+        
+        .spam-section {
+            border: 2px solid rgba(239, 68, 68, 0.6);
+            background: rgba(239, 68, 68, 0.08);
+        }
+        
+        .ham-section {
+            border: 2px solid rgba(74, 222, 128, 0.6);
+            background: rgba(74, 222, 128, 0.08);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+        
+        .spam-section .section-header {
+            border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .ham-section .section-header {
+            border-bottom: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .spam-section .section-title {
+            color: #ef4444;
+        }
+        
+        .ham-section .section-title {
+            color: #4ade80;
+        }
+        
+        .section-count {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .spam-section .section-count {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .ham-section .section-count {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+        
+        .batch-results-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .spam-section .batch-results-table {
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .ham-section .batch-results-table {
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        
+        .batch-results-table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .spam-section .batch-results-table th {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ffd700;
+            border-bottom: 2px solid #ef4444;
+        }
+        
+        .ham-section .batch-results-table th {
+            background: rgba(74, 222, 128, 0.15);
+            color: #ffd700;
+            border-bottom: 2px solid #4ade80;
+        }
+        
+        .batch-results-table td {
+            padding: 14px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        
+        .spam-section .batch-results-table tr {
+            border-bottom: 1px solid rgba(239, 68, 68, 0.1);
+        }
+        
+        .ham-section .batch-results-table tr {
+            border-bottom: 1px solid rgba(74, 222, 128, 0.1);
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .faq-container {
@@ -178,6 +363,19 @@
             .keyword-tag {
                 font-size: 0.8rem;
                 padding: 3px 8px;
+            }
+            
+            .batch-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .tables-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .table-section {
+                min-height: 350px;
             }
         }
     </style>
@@ -218,6 +416,147 @@
                         </div>
                     </div>
                 </div>
+                <script>
+    // ... các hàm switchTab, switchSpamTab, toggleFAQ đã có ...
+
+    // Single Prediction Form Handler - ĐÃ SỬA MÀU CONFIDENCE
+    document.getElementById('single-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const smsInput = document.getElementById('sms-input').value.trim();
+        const resultContainer = document.getElementById('resultContainer');
+        const resultText = document.getElementById('resultText');
+        const confidenceDisplay = document.getElementById('confidenceDisplay');
+        const keywordsDisplay = document.getElementById('keywordsDisplay');
+        
+        if (!smsInput) {
+            showResult('Please enter a message to analyze!', 'warning');
+            confidenceDisplay.innerHTML = '';
+            keywordsDisplay.innerHTML = '';
+            return;
+        }
+        
+        try {
+            showResult('🔄 Analyzing message...', 'loading');
+            confidenceDisplay.innerHTML = '';
+            keywordsDisplay.innerHTML = '';
+            
+            const response = await fetch(`http://localhost:8000/predict`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: smsInput })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Get confidence level from API response
+            const confidence = data.confidence || 0;
+            
+            // Determine confidence class based on percentage AND message type - ĐÃ SỬA
+            let confidenceClass = 'confidence-medium';
+            if (data.label === 'spam') {
+                // For spam messages - use red/orange colors
+                if (confidence >= 80) confidenceClass = 'confidence-high';
+                else if (confidence >= 60) confidenceClass = 'confidence-medium';
+                else confidenceClass = 'confidence-low';
+            } else {
+                // For ham messages - use green colors - ĐÃ SỬA
+                if (confidence >= 80) confidenceClass = 'confidence-high-ham';
+                else if (confidence >= 60) confidenceClass = 'confidence-medium-ham';
+                else confidenceClass = 'confidence-low-ham';
+            }
+            
+            // Display results based on prediction
+            if (data.label === 'spam') {
+                showResult('🚨 SPAM DETECTED!', 'spam');
+                
+                // Display confidence with dynamic styling
+                confidenceDisplay.innerHTML = `
+                    <div class="result-confidence ${confidenceClass}">
+                        Confidence: ${confidence}%
+                    </div>
+                `;
+                
+                // Display spam keywords if available
+                if (data.top_words && data.top_words.length > 0) {
+                    const keywordsHTML = data.top_words.map(word => 
+                        `<span class="keyword-tag">${word[0]}</span>`
+                    ).join('');
+                    
+                    keywordsDisplay.innerHTML = `
+                        <div class="spam-keywords">
+                            <h4>Spam Keywords Detected:</h4>
+                            <div class="keyword-tags">
+                                ${keywordsHTML}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+            } else {
+                showResult('SAFE MESSAGE', 'ham');
+                
+                // Display confidence with dynamic styling - SẼ HIỂN THỊ MÀU XANH
+                confidenceDisplay.innerHTML = `
+                    <div class="result-confidence ${confidenceClass}">
+                        Confidence: ${confidence}%
+                    </div>
+                `;
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            showResult('❌ Connection error! Please check if backend is running.', 'error');
+            confidenceDisplay.innerHTML = '';
+            keywordsDisplay.innerHTML = '';
+        }
+    });
+
+    // Show result function
+    function showResult(message, type) {
+        const resultContainer = document.getElementById('resultContainer');
+        const resultText = document.getElementById('resultText');
+        
+        // Reset classes
+        resultContainer.className = 'result-container';
+        resultText.className = '';
+        
+        // Apply type-specific styling
+        switch (type) {
+            case 'spam':
+                resultContainer.classList.add('result-spam');
+                resultText.classList.add('result-spam');
+                break;
+            case 'ham':
+                resultContainer.classList.add('result-ham');
+                resultText.classList.add('result-ham');
+                break;
+            case 'error':
+                resultContainer.classList.add('result-error');
+                resultText.classList.add('result-error');
+                break;
+            case 'warning':
+                resultContainer.classList.add('result-warning');
+                resultText.classList.add('result-warning');
+                break;
+            case 'loading':
+                resultContainer.classList.add('loading');
+                resultText.classList.add('loading');
+                break;
+        }
+        
+        resultText.textContent = message;
+        resultContainer.style.display = 'block';
+    }
+
+    // ... phần còn lại của code batch upload ...
+</script>
 
                 <!-- Batch Upload Tab -->
                 <div id="batch-tab" class="tab-content">
@@ -587,7 +926,200 @@
                 firstFAQ.nextElementSibling.classList.add('active');
             }
         });
+        
+// Batch Upload Form Handler - GỌI API THẬT
+document.getElementById('batch-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const fileInput = document.getElementById('csv-file');
+    const batchResult = document.getElementById('batchResult');
+    
+    if (!fileInput.files[0]) {
+        batchResult.innerHTML = '<div class="result-warning">Please select a CSV file!</div>';
+        batchResult.style.display = 'block';
+        return;
+    }
+    
+    try {
+        const submitBtn = document.querySelector('#batch-form .submit-btn');
+        submitBtn.textContent = '🔄 Processing...';
+        submitBtn.disabled = true;
+        
+        batchResult.innerHTML = '<div class="loading">🔄 Processing CSV file...</div>';
+        batchResult.style.display = 'block';
+        
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        
+        console.log('📤 Sending batch request to: http://localhost:8000/batch-predict-json');
+        
+        // GỌI API THẬT
+        const response = await fetch('http://localhost:8000/batch-predict-json', {
+            method: 'POST',
+            body: formData
+        });
+        
+        console.log('📥 Response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Server error:', errorText);
+            throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+        
+        const data = await response.json();
+        console.log('✅ API Response data:', data);
+        
+        if (data.success) {
+            displayBatchResults(data);
+        } else {
+            throw new Error(data.error || 'Processing failed');
+        }
+        
+    } catch (error) {
+        console.error('❌ Batch upload error:', error);
+        batchResult.innerHTML = `
+            <div class="result-error">
+                ❌ Batch processing error! ${error.message}
+                <br><small>Check console for details</small>
+            </div>
+        `;
+    } finally {
+        const submitBtn = document.querySelector('#batch-form .submit-btn');
+        submitBtn.textContent = 'Process Batch';
+        submitBtn.disabled = false;
+    }
+});
+        
+        // Display batch results in the format shown in the image
+        function displayBatchResults(data) {
+            const batchResult = document.getElementById('batchResult');
+            
+            // Create HTML for the batch results
+            let resultsHTML = `
+                <div class="batch-results-container">
+                    <div class="batch-results-header">
+                        <h3 class="batch-results-title">Batch Analysis Results</h3>
+                        <p class="batch-results-subtitle">Messages categorized as spam and legitimate</p>
+                    </div>
+                    
+                    <div class="batch-stats">
+                        <div class="stat-card">
+                            <div class="stat-value total-stat">${data.total_messages}</div>
+                            <div class="stat-label">Total Messages</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value spam-stat">${data.spam_count}</div>
+                            <div class="stat-label">Spam Detected</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value ham-stat">${data.ham_count}</div>
+                            <div class="stat-label">Legitimate</div>
+                        </div>
+                    </div>
+                    
+                    <hr style="border: none; height: 1px; background: rgba(255,255,255,0.2); margin: 30px 0;">
+                    
+                    <div class="tables-container">
+                        <div class="table-section spam-section">
+                            <div class="section-header">
+                                <h4 class="section-title">Spam Messages</h4>
+                                <span class="section-count">${data.spam_count} messages</span>
+                            </div>
+                            <table class="batch-results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Messages Content</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+            `;
+            
+            // Add spam messages
+            const spamResults = data.results.filter(item => item.is_spam);
+            if (spamResults.length > 0) {
+                spamResults.forEach(item => {
+                    resultsHTML += `
+                        <tr>
+                            <td>${item.text}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                resultsHTML += `
+                    <tr>
+                        <td style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6); font-style: italic;">
+                            No spam messages detected
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            resultsHTML += `
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="table-section ham-section">
+                            <div class="section-header">
+                                <h4 class="section-title">Legitimate Messages</h4>
+                                <span class="section-count">${data.ham_count} messages</span>
+                            </div>
+                            <table class="batch-results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Messages Content</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+            `;
+            
+            // Add legitimate messages
+            const hamResults = data.results.filter(item => !item.is_spam);
+            if (hamResults.length > 0) {
+                hamResults.forEach(item => {
+                    resultsHTML += `
+                        <tr>
+                            <td>${item.text}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                resultsHTML += `
+                    <tr>
+                        <td style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6); font-style: italic;">
+                            No legitimate messages found
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            resultsHTML += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            batchResult.innerHTML = resultsHTML;
+        }
+        
+        // File input change handler
+        document.getElementById('csv-file').addEventListener('change', function(e) {
+            const fileLabel = document.querySelector('.file-label');
+            const fileText = document.querySelector('.file-text');
+            
+            if (this.files[0]) {
+                fileText.textContent = this.files[0].name;
+                fileLabel.style.borderColor = '#4ade80';
+                fileLabel.style.background = 'rgba(74, 222, 128, 0.1)';
+            } else {
+                fileText.textContent = 'Choose CSV file';
+                fileLabel.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                fileLabel.style.background = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
     </script>
-    <script src="app.js"></script>
 </body>
 </html>

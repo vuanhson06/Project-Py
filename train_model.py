@@ -1,7 +1,6 @@
 import argparse, os, joblib, json
 import numpy as np
 import pandas as pd
-from Vectorize import ManualVectorizer  # Import class trước khi load pickle
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from sklearn.naive_bayes import MultinomialNB
@@ -28,7 +27,6 @@ def load_data(train_path, test_path): # Tải dữ liệu
 #-----------------------------------------------------------------------------------------------------------------------------------------------
 
 def load_vectorizer(vec_path): # Mở file vector đã pickle hóa và gắn và biến vec
-    vec = joblib.load(args.vectorizer)
     vec = joblib.load(vec_path)
     return vec
 
@@ -98,7 +96,7 @@ def main(args):
 
     # 3) GridSearchCV
     gs = grid_and_cv(args.model)
-    gs.fit(X_train, y_train)
+    gs.fit(X_train, y_train) # type: ignore
 
     # 4) Đánh giá trên test
     y_pred = gs.best_estimator_.predict(X_test) # y_pred là mảng dự đoán nhãn (0 hoặc 1, tương ứng với ham/spam).
@@ -139,30 +137,37 @@ if __name__ == "__main__": # Điểm bắt đầu chương trình khi file này 
     if args.model: # Nếu đã chỉ định model từ dòng lệnh, thì chỉ chạy model đó
         main(args) # VD chạy "python Step3.py --model nb" thì chỉ chạy NB
 
-    else: # Nếu không chỉ định model, thì thử tất cả nb, lr, svm rồi chọn mô hình tốt nhất
+    else:
         print("No model specified, running nb / lr / svm sequentially...") 
 
-        results = {}  # Tạo một dictionary để lưu điểm của từng model
+        results = {} # lưu f1_weighted từng model
+        model_paths = {}  # lưu đường dẫn file từng model
         models = ["nb", "lr", "svm"]
+
         for m in models:
-            print(f"Model: {m}")
+            print(f"\n--- Training model: {m.upper()} ---")
             args.model = m
-            main(args)  # gọi lại hàm main() để train model này
+            args.out_model = f"artifacts/{m}_model.pkl"   # mỗi model lưu riêng file
+            main(args) # gọi main để train model m
 
-            # Đọc file metrics CSV để lấy điểm f1_weighted mới nhất
+            # Sau khi main() chạy xong, đọc metrics.csv để lấy điểm mới nhất
             df = pd.read_csv(args.metrics_csv)
-            last_row = df.iloc[-1]  # lấy dòng cuối cùng (mới nhất)
-            results[m] = last_row["f1_weighted"]  # lưu điểm f1_weighted vào dict
+            last_row = df.iloc[-1]
+            results[m] = last_row["f1_weighted"]
+            model_paths[m] = args.out_model
 
-        best_model_name = max(results, key=results.get) # Tên model có điểm f1_weighted cao nhất
-        best_score = results[best_model_name] # Điểm f1_weighted cao nhất
+        # Chọn model tốt nhất dựa trên f1_weighted
+        best_model_name = max(results, key=results.get) #type:ignore
+        best_score = results[best_model_name]
+        best_model_path = model_paths[best_model_name]
 
-        print("\nFinal Result:")
-        for m, s in results.items():
-            print(f"  - {m}: {s:.4f}")
-        print(f"Best Model: {best_model_name.upper()} (f1_weighted = {best_score:.4f})")
+        # Copy model tốt nhất thành spam_model.pkl  
+        import shutil # import module chuẩn của Python để làm việc với file
+        shutil.copy(best_model_path, "artifacts/spam_model.pkl") # sao chép  nội dung file từ best_model_path sang artifacts/spam_model.pkl
+        print(f"\n Best model: {best_model_name.upper()} (f1_weighted = {best_score:.4f})")
+        print(f"Copied {best_model_path} → artifacts/spam_model.pkl (for API use)")
 
-        # Lưu tóm tắt kết quả vào file JSON
+        # Lưu tóm tắt kết quả 
         summary = {
             "best_model": best_model_name,
             "best_score": best_score,
@@ -171,4 +176,4 @@ if __name__ == "__main__": # Điểm bắt đầu chương trình khi file này 
         os.makedirs("reports", exist_ok=True)
         with open("reports/best_model_summary.json", "w", encoding="utf-8") as f:
             json.dump(summary, f, indent=2, ensure_ascii=False)
-        print("The result is saved in reports/best_model_summary.json")
+        print("\n Saved to reports/best_model_summary.json")

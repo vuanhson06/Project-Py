@@ -304,9 +304,23 @@ form input[type="text"]:focus {
 
 .batch-stats {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(4, 1fr); /* SỬA 3 THÀNH 4 */
+    gap: 15px; /* Giảm gap để vừa 4 ô */
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 20px; /* Giảm padding để vừa */
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-value {
+    font-size: 2rem; /* Giảm size để vừa */
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .stat-item {
@@ -1096,4 +1110,157 @@ form input[type="text"]:focus {
     .table-section {
         min-height: 350px !important;
     }
+}
+/* Result Types */
+.loading {
+    color: #ffd700;
+    font-weight: 600;
+}
+
+.result-spam {
+    color: #ff6b6b;
+}
+
+.result-spam .result-title {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.result-ham {
+    color: #4ade80;
+}
+
+.result-ham .result-title {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.result-warning, .result-error {
+    color: #ffd700;
+    font-weight: 600;
+}
+
+/* Confidence colors */
+.confidence-high {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.confidence-medium {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.confidence-low {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* Ham confidence colors */
+.confidence-high-ham {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.confidence-medium-ham {
+    background: rgba(101, 163, 13, 0.2);
+    color: #65a30d;
+    border: 1px solid rgba(101, 163, 13, 0.3);
+}
+
+.confidence-low-ham {
+    background: rgba(132, 204, 22, 0.2);
+    color: #84cc16;
+    border: 1px solid rgba(132, 204, 22, 0.3);
+}
+/* Enhanced batch results styling */
+.keyword-tag-small {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    margin: 1px;
+    display: inline-block;
+}
+
+.keywords-cell {
+    max-width: 150px;
+}
+
+.confidence-cell {
+    font-weight: bold;
+    color: #ffd700;
+    text-align: center;
+}
+
+/* Improved confidence display for ham messages */
+.confidence-high-ham {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.confidence-medium-ham {
+    background: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.confidence-low-ham {
+    background: rgba(34, 197, 94, 0.1);
+    color: #15803d;
+    border: 1px solid rgba(34, 197, 94, 0.15);
+}
+
+/* Better table responsiveness */
+@media (max-width: 768px) {
+    .batch-results-table {
+        font-size: 0.8rem;
+    }
+    
+    .keywords-cell {
+        max-width: 100px;
+    }
+    
+    .keyword-tag-small {
+        font-size: 0.7rem;
+        padding: 1px 4px;
+    }
+}
+.id-cell {
+    font-weight: bold;
+    color: #ffd700;
+    text-align: center;
+    width: 60px;
+}
+
+.keywords-cell {
+    max-width: 150px;
+    min-width: 120px;
+}
+
+.confidence-cell {
+    font-weight: bold;
+    color: #ffd700;
+    text-align: center;
+    width: 80px;
+}
+
+.keyword-tag-small {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    margin: 1px;
+    display: inline-block;
 }
