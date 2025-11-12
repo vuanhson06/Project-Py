@@ -1,7 +1,0 @@
-text,Predicted_Label,Confidence
-Hello world,ham,90.0
-Free prize winner,ham,90.0
-Congratulations you won ,spam,85.0
-Meeting tomorrow at 3 PM,ham,90.0
-URGENT: Your account will be suspended,ham,90.0
-Normal message here,ham,90.0
