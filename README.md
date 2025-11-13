@@ -24,10 +24,14 @@ The project is conducted as part of the course **Programming for Data Science** 
 
 ## 3. Problem Description
 
-- **Input:** A text string (SMS message).  
-- **Output:** Predicted label — `Spam` or `Ham`.  
-- **Goal:** Build a machine learning model capable of automatically distinguishing spam messages from legitimate ones based on text content.
+- **Input:** A text string (SMS message)
 
+- **Output:**
+  - Predicted label — `Spam` or `Ham`
+  - Confidence score (e.g., `Spam – 99.2% confidence`)
+  - If predicted as `Spam`, the system highlights keywords that likely triggered the spam classification (e.g., `"win"`, `"free"`, `"click"`)
+
+- **Goal:** Build a machine learning model capable of automatically distinguishing spam messages from legitimate ones based on text content.
 ---
 
 ## 4. Processing Pipeline
@@ -47,10 +51,10 @@ The project is divided into four main stages:
 - Save the vectorizer with `joblib` as `artifacts/vectorizer.pkl`.
 
 ### 4.3 Model Training
-- Models used: **Multinomial Naive Bayes** or **Logistic Regression**.
+- Models used: **Support Vector Machine (SVM)** and optionally *Multinomial Naive Bayes or Logistic Regression*.
 - Train the model on the training set and evaluate it on the testing set.
 - Evaluation metrics include: Accuracy, Precision, Recall, and F1-score.
-- Save the trained model as `artifacts/spam_model.pkl`.
+- Save the trained model as artifacts/spam_model.pkl.
 
 ### 4.4 Web Application Deployment
 - The web application is developed using **Streamlit**.
@@ -78,7 +82,9 @@ project/
 │   ├── vectorizer.pkl      # Saved vectorizer
 │   └── spam_model.pkl      # Trained ML model
 │
-├── app.py                  # Streamlit web application
+├── templates/              # HTML templates for frontend
+├── static/                 # CSS and JS files
+├── app.py                  # Python backend application
 ├── train.py                # Model training script
 ├── requirements.txt        # Required dependencies
 └── README.md               # Project documentation
@@ -107,25 +113,12 @@ If you wish to retrain the model from scratch using the raw dataset:
 python train.py
 ```
 
-### 7.4 Run Web Application
-
-To launch the Streamlit web app:
-
-```bash
-streamlit run app.py
-```
-
-After executing, open your browser at the displayed address (commonly `http://localhost:8501`).
-
----
-
 ### 7.5 Libraries Used
 
 * **pandas** – Data manipulation and CSV processing
 * **numpy** – Numerical computation
 * **scikit-learn** – Machine learning algorithms and metrics
 * **joblib** – Saving and loading models/vectorizers
-* **streamlit** – Building interactive web applications
 * **wordcloud**, **matplotlib** – Keyword visualization and plots
 
 
