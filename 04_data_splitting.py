@@ -1,6 +1,4 @@
-# -----------------------------
 # 5) Vectorizer thủ công (BoW counts)
-# -----------------------------
 from Tokenize import tokenize
 import os
 import csv
@@ -62,14 +60,11 @@ class ManualVectorizer:
             # Với mỗi văn bản, gọi transform_one và gán vào hàng tương ứng.
             mat[i, :] = self.transform_one(t)
         return mat
-
-# -----------------------------
 # 6) Ghi CSV train/test đã vectorize? -> Không. Ta không tạo ra các file train.csv và test.csv chứa dữ liệu số (vector).
 #    Bước 2 chỉ xuất CSV (dữ liệu thô đã làm sạch) và file pickle của vectorizer. 
 #    Nhiệm vụ của bước này là (1) làm sạch và chia dữ liệu văn bản thô, lưu ra file CSV, và (2) tạo ra vectorizer rồi lưu (serialize) vào file .pkl.
 #    Train/eval (Bước 3) sẽ tải (load) file vectorizer.pkl và tự transform. 
 #    Bước training sau sẽ tự chịu trách nhiệm tải vectorizer (.pkl) và dữ liệu thô (.csv), sau đó tự thực hiện việc chuyển đổi văn bản thành số.
-# -----------------------------
 
 def write_csv(path: str, labels: List[str], texts: List[str]):
     os.makedirs(os.path.dirname(path), exist_ok=True) # Tạo thư mục nếu chưa có
@@ -79,11 +74,8 @@ def write_csv(path: str, labels: List[str], texts: List[str]):
         writer.writerow(["label", "text"])
         for y, t in zip(labels, texts):     # Ghi từng dòng dữ liệu
             writer.writerow([y, t])
-
-# -----------------------------
+            
 # 7) Pipeline chính cho Bước 2
-# -----------------------------
-
 def main():
     labels, texts = read_raw_csv(RAW_CSV)
     # B1: Đọc dữ liệu gốc
