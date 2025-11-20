@@ -4,6 +4,7 @@ import csv
 import json
 import random
 import joblib
+import numpy as np
 from typing import List, Tuple, Dict
 # 0) Cấu hình dự án
 
@@ -40,6 +41,7 @@ def keep_letters_and_spaces(s: str) -> str:
             out.append(' ') # Thay kí tự khác/không hợp lệ bằng khoảng trắng
 
     return ''.join(out) # Ghép các kí tự lại thành chuỗi hoàn chỉnh 
+
 
 
 
