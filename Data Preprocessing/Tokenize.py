@@ -1,6 +1,4 @@
-# -----------------------------
 # 1) Tách từ (Tokenize)
-# -----------------------------
 from typing import List, Tuple
 import re
 import pandas as pd  # Dùng pandas để đọc và xử lý dữ liệu dạng bảng (CSV, Excel, ...)
@@ -36,10 +34,8 @@ def tokenize(text: str) -> List[str]:
     # 4. Loại bỏ các token rỗng và các từ vô nghĩa (stopwords) và trả về danh sách từ đã được tách và lọc sạch.
     #    -> STOPWORDS là một tập hợp các từ cần bỏ, được định nghĩa sẵn.
     return [w for w in words if w and (w not in STOPWORDS)]
-
-# -----------------------------
+     
 # 2) Đọc dữ liệu thô từ file CSV
-# -----------------------------
 def read_raw_csv(path: str) -> Tuple[List[str], List[str]]:
     """
     Đọc file spam.csv từ Kaggle (v1,v2,...)

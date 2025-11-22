@@ -6,10 +6,8 @@ import random
 import joblib
 import numpy as np
 from typing import List, Tuple, Dict
-
-# -----------------------------
 # 0) Cấu hình dự án
-# -----------------------------
+
 RANDOM_STATE = 42 # Giá trị ngẫu nhiên để tái lập kết quả
 VOCAB_SIZE = 3000 # Số lượng từ trong vocab
 
@@ -20,9 +18,8 @@ VEC_PKL   = "artifacts/vectorizer.pkl"    # pickle vectorizer cho Bước 3/4 (F
 VOCAB_TXT = "artifacts/vocab.txt"         # vocab (tham khảo) (Đây là file lưu danh sách từ vựng)
 TEST_SIZE = 0.2                           # 80/20 split (Đây là tỉ lệ chia dữ liệu: 80 la train, 20 là test)
 
-# -----------------------------
 # 1) Stopwords & Cleaning
-# -----------------------------
+
 STOPWORDS = {
     "a","an","the","is","are","am","was","were","be","been","being","i","you","he","she","it","we","they","me","him","her","us","them",
     "this","that","these","those","there","here","of","to","in","on","for","from","with","by","at","as","about","into","over","after",
@@ -44,4 +41,7 @@ def keep_letters_and_spaces(s: str) -> str:
             out.append(' ') # Thay kí tự khác/không hợp lệ bằng khoảng trắng
 
     return ''.join(out) # Ghép các kí tự lại thành chuỗi hoàn chỉnh 
+
+
+
 
