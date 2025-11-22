@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://sms-classification-project-group-1-3.onrender.com";
+const API_BASE_URL = "http://localhost:8000";
 
 // ==================== TAB MANAGEMENT FUNCTIONS ====================
 
