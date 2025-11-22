@@ -103,7 +103,25 @@ def load_artifacts():
         print(f"Vectorizer vocabulary size: {len(vectorizer.vocabulary_)}") # In ra kích thước vocab của vectorizer
     return vectorizer, model
 
-def extract_top_spam_words(text: str, top_k: int = 5):
+def get_feature_names(vec) -> np.ndarray:
+    """
+    Trả về mảng feature_names theo đúng thứ tự cột của vectorizer.
+    Hỗ trợ cả TfidfVectorizer/CountVectorizer lẫn ManualVectorizer.
+    """
+    if hasattr(vec, "get_feature_names_out"):
+        return np.array(vec.get_feature_names_out())
+
+    vocab = getattr(vec, "vocabulary_", None)
+    if vocab is None:
+        raise ValueError("Vectorizer không có vocabulary_ hoặc get_feature_names_out")
+
+    inv = [None] * len(vocab)
+    for token, idx in vocab.items():
+        inv[idx] = token
+    return np.array(inv)
+
+
+def extract_top_spam_words_fallback(text: str, top_k: int = 5):
     try:
         # Danh sách từ spam phổ biến với trọng số
         spam_keywords = {
@@ -162,6 +180,64 @@ def extract_top_spam_words(text: str, top_k: int = 5):
     except Exception as e:
         print(f"Error in extract_top_spam_words: {e}")
         return [['spam', 5]]  # Fallback an toàn
+
+def extract_top_spam_words(text: str, top_k: int = 5):
+    try:
+        vec, clf = load_artifacts()
+        feature_names = get_feature_names(vec)
+
+        X = vec.transform([text])
+        x_row = X[0]
+
+        importance = None
+        if hasattr(clf, "coef_"):
+            classes = getattr(clf, "classes_", np.array([0, 1]))
+            if 1 in classes:
+                spam_idx = int(np.where(classes == 1)[0][0])
+            elif "spam" in classes:
+                spam_idx = int(np.where(classes == "spam")[0][0])
+            else:
+                spam_idx = 0
+            importance = clf.coef_[spam_idx]
+        elif hasattr(clf, "feature_importances_"):
+            importance = clf.feature_importances_
+
+        if importance is None:
+            print("Model không có coef_ / feature_importances_, dùng fallback.")
+            return extract_top_spam_words_fallback(text, top_k=top_k)
+
+        contrib = {}
+
+        if hasattr(x_row, "tocoo"):
+            x_coo = x_row.tocoo()
+            for idx, value in zip(x_coo.col, x_coo.data):
+                score = float(value * importance[idx])
+                if score > 0:
+                    token = feature_names[idx]
+                    contrib[token] = contrib.get(token, 0.0) + score
+        else:
+            x_arr = np.asarray(x_row).ravel()
+            for idx, value in enumerate(x_arr):
+                if value == 0:
+                    continue
+                score = float(value * importance[idx])
+                if score > 0:
+                    token = feature_names[idx]
+                    contrib[token] = contrib.get(token, 0.0) + score
+
+        if not contrib:
+            return extract_top_spam_words_fallback(text, top_k=top_k)
+
+        sorted_words = sorted(contrib.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        result = [[w, float(s)] for w, s in sorted_words]
+
+        print(f"Spam words (model-based) from '{text[:30]}...': {result}")
+        return result
+
+    except Exception as e:
+        print(f"Error in extract_top_spam_words (model-based): {e}")
+        return extract_top_spam_words_fallback(text, top_k=top_k)
+
 
 def predict_one(text: str): # Hàm dự đoán cho một tin nhắn đơn lẻ
     try:
